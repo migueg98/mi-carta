@@ -2,56 +2,106 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Carta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mareal · Cartas</title>
+
+  <!-- Evita que navegadores móviles entreguen una versión en caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma"        content="no-cache" />
+  <meta http-equiv="Expires"       content="0" />
+
+  <!-- Paleta tomada del logotipo -->
   <style>
-    html,body{height:100%;margin:0;font-family:sans-serif;display:flex;flex-direction:column}
-    header{padding:1rem;background:#f5f5f5;box-shadow:0 2px 4px rgba(0,0,0,.1)}
-    button{margin-right:.5rem;padding:.5rem 1rem;border:none;border-radius:4px;cursor:pointer;background:#0d6efd;color:#fff;font-size:1rem}
-    button.active,button:hover{background:#0b5ed7}
-    #viewer{flex:1;display:flex}
-    #viewer embed{flex:1;border:0}
-    #placeholder{flex:1;display:flex;align-items:center;justify-content:center;color:#777}
+    :root{
+      --c-primary:#0e6897;   /* azul profundo */
+      --c-secondary:#3eb6c4; /* turquesa */
+      --c-accent:#ff725e;    /* coral */
+      --c-bg:#ecf7fa;        /* fondo muy claro */
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;background:var(--c-bg);display:flex;flex-direction:column}
+
+    /* ░ Header optimizado para móvil ░ */
+    header{
+      background:linear-gradient(135deg,var(--c-primary),var(--c-secondary));
+      padding:calc(env(safe-area-inset-top)+1rem) 1rem 1.25rem;
+      display:flex;flex-direction:column;align-items:center;gap:1rem;
+      border-bottom-left-radius:1.25rem;border-bottom-right-radius:1.25rem;
+      box-shadow:0 4px 10px rgba(0,0,0,.1);
+    }
+    #logo{height:52px;width:auto}
+
+    /* ░ Botones grandes (finger‑friendly) ░ */
+    nav{display:flex;flex-direction:column;gap:.9rem;width:100%;max-width:460px}
+    button{
+      width:100%;padding:.9rem 1.3rem;border:none;border-radius:2rem;
+      background:#fff;color:var(--c-primary);font-size:1.075rem;font-weight:600;
+      letter-spacing:.2px;box-shadow:0 3px 6px rgba(0,0,0,.08);
+      cursor:pointer;transition:background .2s,color .2s,transform .15s;
+    }
+    button:hover{background:var(--c-accent);color:#fff;transform:translateY(-1px)}
+    button.active{background:var(--c-secondary);color:#fff}
+
+    /* ░ Visor ░ */
+    #viewer{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem}
+    #viewer embed{flex:1;border:0;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,.12);min-height:0;max-width:100%}
+    #placeholder{color:#6c757d;font-size:1.05rem;text-align:center;max-width:90%}
+
+    /* ░ Desktop layout ░ */
+    @media(min-width:680px){
+      header{flex-direction:row;align-items:center;justify-content:space-between;padding:1rem 2.4rem;border-radius:0}
+      nav{flex-direction:row;max-width:none;width:auto}
+      button{width:auto;padding:.65rem 1.4rem;border-radius:999px;font-size:1rem}
+    }
   </style>
+
+  <!-- Precarga cartas -->
+  <link rel="preload" href="tapas.pdf?v=2"  as="fetch" type="application/pdf" crossorigin>
+  <link rel="preload" href="platos.pdf?v=2" as="fetch" type="application/pdf" crossorigin>
 </head>
 <body>
   <header>
-    <button id="btnTapas">Carta de tapas</button>
-    <button id="btnPlatos">Carta de platos</button>
+    <img id="logo" src="logo.png?v=2" alt="Mareal Restaurante logo" loading="lazy" />
+    <nav>
+      <button id="btnTapas">Carta de tapas</button>
+      <button id="btnPlatos">Carta de platos</button>
+    </nav>
   </header>
+
   <div id="viewer">
     <div id="placeholder">Selecciona una carta para verla</div>
   </div>
 
   <script>
-    const viewer = document.getElementById('viewer');
-    const placeholder = document.getElementById('placeholder');
-    const tapasBtn = document.getElementById('btnTapas');
-    const platosBtn = document.getElementById('btnPlatos');
-
-    function showPdf(file, btn){
-      // Quita el PDF anterior (si existe)
-      const old = viewer.querySelector('embed');
-      if(old){ old.remove(); }
-
-      // Oculta el texto de ayuda
-      placeholder.style.display='none';
-
-      // Estado activo en el botón pulsado
-      [tapasBtn, platosBtn].forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Inserta el nuevo visor
-      const embed = document.createElement('embed');
-      embed.src = file + '#view=FitH';
-      embed.type = 'application/pdf';
-      embed.style.width = '100%';
-      embed.style.height = '100%';
-      viewer.appendChild(embed);
+    // versión del build para forzar recarga cuando subas cambios
+    const BUILD_VERSION = '2024-07-23-2';
+    if(localStorage.getItem('mareal_ver')!==BUILD_VERSION){
+      localStorage.setItem('mareal_ver', BUILD_VERSION);
+      // fuerza recarga sin caché la primera vez que detecta versión nueva
+      if('performance' in window && performance.getEntriesByType('navigation')[0].type!=='reload'){
+        window.location.reload(true);
+      }
     }
 
-    tapasBtn.addEventListener('click', () => showPdf('tapas.pdf', tapasBtn));
-    platosBtn.addEventListener('click', () => showPdf('platos.pdf', platosBtn));
+    const viewer=document.getElementById('viewer');
+    const placeholder=document.getElementById('placeholder');
+    const tapasBtn=document.getElementById('btnTapas');
+    const platosBtn=document.getElementById('btnPlatos');
+
+    function showPdf(file,btn){
+      const current=viewer.querySelector('embed');
+      if(current&&current.dataset.src===file)return;
+      current?.remove();
+      placeholder.style.display='none';
+      [tapasBtn,platosBtn].forEach(b=>b.classList.toggle('active',b===btn));
+      const embed=document.createElement('embed');
+      embed.dataset.src=file;
+      embed.src=`${file}?v=2#view=FitH`;
+      embed.type='application/pdf';
+      viewer.appendChild(embed);
+    }
+    tapasBtn.addEventListener('click',()=>showPdf('tapas.pdf',tapasBtn));
+    platosBtn.addEventListener('click',()=>showPdf('platos.pdf',platosBtn));
   </script>
 </body>
 </html>
