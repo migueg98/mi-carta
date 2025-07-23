@@ -3,28 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Carta</title>
+  <title>Carta · Mareal</title>
 
-  <!-- Pre‑carga de los ficheros PDF para que empiecen a bajarse en cuanto abra la página -->
+  <!-- Colores principales extraídos del logo (ajusta si lo deseas) -->
+  <style>
+    :root{
+      --c-primary: #0e6897;   /* azul océano */
+      --c-secondary:#3eb6c4; /* turquesa claro */
+      --c-accent:  #ff725e;  /* coral para hover */
+      --c-bg: #f2f7fa;       /* gris muy claro */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:"Segoe UI",Roboto,sans-serif;background:var(--c-bg);display:flex;flex-direction:column}
+
+    /* ░░░ Encabezado con logo ░░░ */
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:.75rem 1rem;background:linear-gradient(90deg,var(--c-primary),var(--c-secondary));
+      color:#fff;box-shadow:0 2px 4px rgba(0,0,0,.08);z-index:20
+    }
+    header img{height:48px;width:auto;max-width:180px}
+
+    /* ░░░ Botones ░░░ */
+    nav{display:flex;gap:.5rem}
+    button{
+      padding:.55rem 1.5rem;border:none;border-radius:999px;font-size:1rem;font-weight:600;
+      background:#fff;color:var(--c-primary);cursor:pointer;transition:.2s
+    }
+    button:hover{background:var(--c-accent);color:#fff}
+    button.active{background:var(--c-secondary);color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.4)}
+
+    /* ░░░ Contenedor visor ░░░ */
+    #viewer{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem}
+    #viewer embed{flex:1;height:100%;border:0;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    #placeholder{color:#777;font-size:1.1rem;text-align:center}
+  </style>
+
+  <!-- Preload de PDFs -->
   <link rel="preload" href="tapas.pdf"  as="fetch" type="application/pdf" crossorigin>
   <link rel="preload" href="platos.pdf" as="fetch" type="application/pdf" crossorigin>
-
-  <style>
-    :root{ --primary:#0d6efd; --primary-hover:#0b5ed7; }
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;background:#fff}
-    header{padding:1rem;box-shadow:0 2px 4px rgba(0,0,0,.05);z-index:10;background:#fff;position:sticky;top:0}
-    button{margin-inline-end:.5rem;padding:.55rem 1.25rem;border:1px solid var(--primary);border-radius:6px;background:var(--primary);color:#fff;font-size:1rem;cursor:pointer;transition:.15s}
-    button:hover{background:var(--primary-hover)}
-    button.active{box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 4px var(--primary-hover)}
-    #viewer{flex:1;display:flex}
-    #viewer embed{flex:1;border:0;min-height:0}
-    #placeholder{flex:1;display:flex;align-items:center;justify-content:center;color:#666;font-size:clamp(1rem,2.5vw,1.25rem)}
-  </style>
 </head>
 <body>
   <header>
-    <button id="btnTapas">Carta de tapas</button>
-    <button id="btnPlatos">Carta de platos</button>
+    <!-- Reemplaza logo.png por tu versión PNG/SVG del logo en la raíz del repo -->
+    <img src="logo.png" alt="Mareal Restaurante logo" loading="lazy">
+    <nav>
+      <button id="btnTapas">Carta de tapas</button>
+      <button id="btnPlatos">Carta de platos</button>
+    </nav>
   </header>
 
   <div id="viewer">
@@ -38,31 +64,23 @@
     const platosBtn   = document.getElementById('btnPlatos');
 
     function showPdf(file, clickedBtn){
-      // Si ya está mostrando ese PDF, nada que hacer
       const current = viewer.querySelector('embed');
-      if(current && current.getAttribute('data-src')===file) return;
+      if(current && current.dataset.src===file) return; // ya cargado
 
-      // Quitar PDF anterior
-      if(current) current.remove();
-
-      // Ocultar placeholder al primer uso
+      current?.remove(); // quitar anterior si existe
       placeholder.style.display='none';
 
-      // Marcar botón activo
       [tapasBtn,platosBtn].forEach(b=>b.classList.toggle('active',b===clickedBtn));
 
-      // Crear y añadir el visor PDF (streaming gracias a la linearización)
-      const embed = document.createElement('embed');
-      embed.setAttribute('data-src',file);
-      embed.src  = `${file}#view=FitH`;
-      embed.type = 'application/pdf';
-      embed.style.width  = '100%';
-      embed.style.height = '100%';
+      const embed  = document.createElement('embed');
+      embed.dataset.src = file;
+      embed.src   = `${file}#view=FitH`;
+      embed.type  = 'application/pdf';
       viewer.appendChild(embed);
     }
 
-    tapasBtn.addEventListener('click', ()=>showPdf('tapas.pdf',  tapasBtn));
-    platosBtn.addEventListener('click',()=>showPdf('platos.pdf', platosBtn));
+    tapasBtn .addEventListener('click', ()=>showPdf('tapas.pdf',  tapasBtn));
+    platosBtn.addEventListener('click', ()=>showPdf('platos.pdf', platosBtn));
   </script>
 </body>
 </html>
