@@ -2,89 +2,86 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mareal · Cartas</title>
 
 <style>
+/* —— Colores de marca —— */
 :root{
-  --logo-bg:#7fccc7; /* color exacto del logo */
-  --txt-main:#0e6897;
-  --txt-accent:#ff725e;
+  --c-bg:#7fccc7;      /* fondo del logo */
+  --c-txt:#0d5e86;     /* azul oscuro texto */
+  --c-accent:#ff725e;  /* coral hover/activo */
 }
+
+/* —— Reset —— */
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--logo-bg);color:var(--txt-main)}
+html,body{height:100%;overflow:hidden;background:var(--c-bg);color:var(--c-txt)}
 
-/* -------- Portada -------- */
+/* —— Pantalla de inicio —— */
 #welcome{
-  height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;padding:1.5rem}
-#welcome img{width:55%;max-width:240px}
-.menu-btn{
-  width:100%;max-width:440px;padding:1.3rem 1rem;border:none;border-radius:24px;
-  background:#fff;color:var(--txt-main);font-size:1.35rem;font-weight:700;
-  box-shadow:0 4px 10px rgba(0,0,0,.12);cursor:pointer;transition:.18s}
-.menu-btn:hover{background:var(--txt-accent);color:#fff;transform:translateY(-2px)}
-@media(min-width:680px){#welcome{flex-direction:row}.menu-btn{max-width:none}}
+  position:fixed;inset:0;height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7vh;padding:6vw}
+#welcome img{width:65%;max-width:260px}
+.big-btn{
+  width:100%;max-width:480px;padding:1.35rem 1rem;border:none;border-radius:28px;font-size:1.4rem;font-weight:700;
+  background:#fff;color:var(--c-txt);box-shadow:0 4px 10px rgba(0,0,0,.13);cursor:pointer;transition:.18s}
+.big-btn:hover{background:var(--c-accent);color:#fff;transform:translateY(-2px)}
+@media(min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
 
-/* -------- Visor -------- */
-#viewer{display:none;flex-direction:column;height:100svh}
-#bar{
-  display:flex;gap:.7rem;justify-content:center;padding:.65rem;
-  background:linear-gradient(90deg,var(--txt-main),#00a6b3);box-shadow:0 3px 9px rgba(0,0,0,.15)}
+/* —— Visor —— */
+#viewer{position:fixed;inset:0;display:none;flex-direction:column;background:var(--c-bg)}
+#bar{display:flex;gap:.75rem;justify-content:center;padding:.75rem;background:linear-gradient(90deg,var(--c-txt),#009fb0);box-shadow:0 3px 9px rgba(0,0,0,.15)}
 .bar-btn{
-  flex:1;padding:.6rem;border:none;border-radius:999px;font-weight:600;font-size:1rem;
-  background:#fff;color:var(--txt-main);cursor:pointer;transition:.15s}
-.bar-btn.active{background:var(--txt-accent);color:#fff}
-#frame{flex:1;border:none;width:100%}
+  flex:1 1 160px;padding:.65rem;border:none;border-radius:999px;font-size:1rem;font-weight:600;cursor:pointer;
+  background:#fff;color:var(--c-txt);transition:.15s}
+.bar-btn.active{background:var(--c-accent);color:#fff}
+#iframe{flex:1;width:100%;border:none;display:block}
 </style>
 </head>
 <body>
 
+<!-- PORTADA -->
 <section id="welcome">
   <img src="logo.png" alt="Mareal logo">
-  <button class="menu-btn" data-menu="tapas">Carta de tapas</button>
-  <button class="menu-btn" data-menu="platos">Carta de platos</button>
+  <button class="big-btn" data-menu="tapas">Carta de tapas</button>
+  <button class="big-btn" data-menu="platos">Carta de platos</button>
 </section>
 
+<!-- VISOR -->
 <section id="viewer">
-  <div id="bar">
+  <nav id="bar">
     <button class="bar-btn" data-menu="tapas">Carta de tapas</button>
     <button class="bar-btn" data-menu="platos">Carta de platos</button>
-  </div>
-  <iframe id="frame" allowfullscreen loading="lazy"></iframe>
+  </nav>
+  <iframe id="iframe" loading="lazy" allowfullscreen></iframe>
 </section>
 
 <script>
-/* rutas PDF ya existentes – no cambian */
+/* —— PDF locales —— */
 const PDF={ tapas:'tapas.pdf', platos:'platos.pdf' };
 
-/* construye URL absoluta hacia PDF.js visor público */
-function viewerURL(file){
-  const base = location.origin + location.pathname.replace(/\\/[^/]*$/,'/'); // carpeta actual
-  return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(base+file)}#view=page-fit`;
-}
-
-/* refs DOM */
+/* —— DOM —— */
 const welcome=document.getElementById('welcome');
 const viewer =document.getElementById('viewer');
-const frame  =document.getElementById('frame');
+const frame  =document.getElementById('iframe');
+const barBtns=[...document.querySelectorAll('.bar-btn')];
 
-/* cambia carta */
+/* —— Mostrar carta —— */
 function show(menu){
-  frame.src = viewerURL(PDF[menu]);
-  viewer.querySelectorAll('.bar-btn').forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
+  frame.src= PDF[menu] + '#view=FitH';            // ajusta ancho – sin desplaz. lateral
+  barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
   welcome.style.display='none';
   viewer .style.display='flex';
   window.scrollTo(0,0);
 }
 
-/* listeners */
+/* —— Enlazar botones —— */
 document.querySelectorAll('[data-menu]').forEach(btn=>{
-  btn.addEventListener('click', ()=> show(btn.dataset.menu));
+  btn.addEventListener('click', ()=>show(btn.dataset.menu));
 });
 
-/* deep‑link (?menu=platos) */
-const q = new URLSearchParams(location.search).get('menu');
-if(PDF[q]) show(q);
+/* —— Deep-link opcional (?menu=platos) —— */
+const m=new URLSearchParams(location.search).get('menu');
+if(m&&PDF[m]) show(m);
 </script>
 </body>
 </html>
