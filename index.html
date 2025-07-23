@@ -2,53 +2,43 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mareal · Cartas</title>
 
 <style>
 :root{
-  --c-logo:#7fccc7;          /* color exacto del fondo del logotipo */
-  --c-primary:#006b8b;       /* azul profundo para texto/botones */
-  --c-secondary:#00a6b3;     /* turquesa para hover/activo */
+  --logo-bg:#7fccc7;      /* tono exacto del logo          */
+  --txt-main:#0e6897;     /* azul oscuro para texto         */
+  --txt-accent:#ff725e;   /* coral para hover / activo      */
 }
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--logo-bg);color:var(--txt-main);overflow:hidden}
 
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:"Segoe UI",Roboto,sans-serif;background:var(--c-logo);color:var(--c-primary);overflow:hidden}
-
-/* -------- PORTADA -------- */
+/* ---------- pantalla de inicio ---------- */
 #welcome{
-  height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
-  padding:1.5rem;text-align:center;
+  height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2rem;padding:1.5rem
 }
 #welcome img{width:55%;max-width:240px;height:auto}
 .menu-btn{
-  width:100%;max-width:420px;padding:1.2rem 1rem;font-size:1.25rem;font-weight:600;
-  background:#fff;border:none;border-radius:22px;color:var(--c-primary);
-  box-shadow:0 4px 10px rgba(0,0,0,.1);cursor:pointer;transition:.2s all;
-}
-.menu-btn:hover{background:var(--c-secondary);color:#fff;transform:translateY(-2px)}
-@media(min-width:680px){#welcome{flex-direction:row} .menu-btn{max-width:none}}
+  width:100%;max-width:440px;padding:1.3rem 1rem;font-size:1.35rem;font-weight:700;text-align:center;
+  background:#fff;border:none;border-radius:24px;color:var(--txt-main);
+  box-shadow:0 4px 10px rgba(0,0,0,.1);cursor:pointer;transition:.18s all}
+.menu-btn:hover{background:var(--txt-accent);color:#fff;transform:translateY(-2px)}
+@media(min-width:680px){#welcome{flex-direction:row}.menu-btn{max-width:none}}
 
-/* -------- VISOR -------- */
-#viewer-wrap{display:none;flex-direction:column;height:100%}
-#bar{
-  display:flex;gap:.6rem;align-items:center;justify-content:center;
-  padding:.6rem;background:linear-gradient(90deg,var(--c-primary),var(--c-secondary));
-  box-shadow:0 2px 7px rgba(0,0,0,.15);
-}
+/* ---------- visor ---------- */
+#viewer{display:none;flex-direction:column;height:100%}
+#topbar{
+  display:flex;gap:.7rem;justify-content:center;align-items:center;
+  padding:.65rem;background:linear-gradient(90deg,var(--txt-main),#00a6b3);
+  box-shadow:0 3px 9px rgba(0,0,0,.15)}
 .bar-btn{
-  flex:1 1 140px;padding:.45rem 1rem;font-size:1rem;font-weight:600;border:none;
-  border-radius:16px;background:#fff;color:var(--c-primary);cursor:pointer;transition:.2s;
-}
-.bar-btn.active{background:var(--c-secondary);color:#fff}
-.bar-btn:hover{transform:translateY(-1px)}
-#iframeBox{flex:1;overflow:hidden}
-iframe{
-  width:100%;height:100%;border:none;display:block;
-}
-
-/* evitar scroll lateral en iOS cuando el PDF es ancho */
-body,html{overscroll-behavior-x:none}
+  flex:1 1 160px;padding:.6rem;border:none;border-radius:999px;font-weight:600;font-size:1rem;
+  background:#fff;color:var(--txt-main);cursor:pointer;transition:.15s}
+.bar-btn.active{background:var(--txt-accent);color:#fff}
+#frameWrap{flex:1;overflow:hidden}
+iframe{border:none;width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
@@ -61,55 +51,46 @@ body,html{overscroll-behavior-x:none}
 </section>
 
 <!-- VISOR -->
-<section id="viewer-wrap">
-  <div id="bar">
-    <button class="bar-btn" id="btnTapas" data-menu="tapas">Carta de tapas</button>
-    <button class="bar-btn" id="btnPlatos" data-menu="platos">Carta de platos</button>
+<section id="viewer">
+  <div id="topbar">
+    <button class="bar-btn" id="btnT" data-menu="tapas">Carta de tapas</button>
+    <button class="bar-btn" id="btnP" data-menu="platos">Carta de platos</button>
   </div>
-  <div id="iframeBox"></div>
+  <div id="frameWrap"></div>
 </section>
 
 <script>
-/* ---------- CONFIG ---------- */
-const menus={
-  tapas : 'tapas.pdf',
-  platos: 'platos.pdf'
-};
-/* ---------- UTIL ---------- */
-const gdocs = url => `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
-const pdfUrl = file => `${location.origin + location.pathname.replace(/\/[^/]*$/,'/')}${file}`;
+/* rutas fijas */
+const pdf={ tapas:'tapas.pdf', platos:'platos.pdf' };
 
-/* ---------- DOM ---------- */
-const welcome   = document.getElementById('welcome');
-const viewer    = document.getElementById('viewer-wrap');
-const iframeBox = document.getElementById('iframeBox');
-const barBtns   = [...document.querySelectorAll('.bar-btn')];
+/* util: usa viewer público de PDF.js */
+const pdfjs= url => 
+  `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(location.origin+location.pathname.replace(/\\/[^/]*$/,'/')+url)}#view=page-fit`;
 
-/* ---------- LOGIC ---------- */
-function loadMenu(menu){
-  if(!menus[menu]) return;
-  // toggle active button in the bar
-  barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
-  // create / replace iframe
-  iframeBox.innerHTML='';
+const welcome = document.getElementById('welcome');
+const viewer  = document.getElementById('viewer');
+const frameBox= document.getElementById('frameWrap');
+const barBtns = [...document.querySelectorAll('.bar-btn')];
+
+/* carga carta */
+function show(menu){
+  if(!pdf[menu]) return;
+  frameBox.innerHTML='';
   const ifr=document.createElement('iframe');
-  ifr.src=gdocs(pdfUrl(menus[menu]));
-  iframeBox.appendChild(ifr);
-  // switch sections
+  ifr.src=pdfjs(pdf[menu]);
+  frameBox.appendChild(ifr);
+  barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
   welcome.style.display='none';
   viewer.style.display='flex';
-  // scroll top (útil si la carta anterior era larga)
   window.scrollTo(0,0);
 }
 
-/* ---------- EVENTS ---------- */
-document.querySelectorAll('[data-menu]').forEach(btn=>{
-  btn.addEventListener('click',()=>loadMenu(btn.dataset.menu));
-});
+/* listeners */
+document.querySelectorAll('[data-menu]').forEach(b=>b.onclick=()=>show(b.dataset.menu));
 
-/* ---------- DEEP LINK ---------- */
-const qp = new URLSearchParams(location.search);
-if(qp.get('menu') && menus[qp.get('menu')]) loadMenu(qp.get('menu'));
+/* deep‑link vía ?menu=tapas|platos */
+const m=new URLSearchParams(location.search).get('menu');
+if(m) show(m);
 </script>
 </body>
 </html>
