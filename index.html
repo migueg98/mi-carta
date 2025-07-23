@@ -5,107 +5,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Mareal · Cartas</title>
 
-  <!-- Colores coherentes con el logotipo -->
+  <!-- Paleta basada en el logotipo -->
   <style>
     :root{
-      --c-primary:#0e6897;   /* azul oscuro */
-      --c-secondary:#3eb6c4; /* turquesa */
-      --c-accent:#ff725e;    /* coral */
-      --c-bg:#ecf7fa;        /* fondo claro */
+      --c-primary:#0e6897;
+      --c-secondary:#3eb6c4;
+      --c-accent:#ff725e;
+      --c-bg:#ecf7fa;
     }
-
     *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:var(--c-bg);display:flex;flex-direction:column;color:var(--c-primary)}
+    html,body{height:100%;background:var(--c-bg);color:var(--c-primary);overflow:hidden}
 
-    /* ░ Pantalla inicial con dos tarjetas ░ */
-    #home{flex:1;display:flex;flex-direction:column}
-    .full-btn{flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none;
-              font-size:1.3rem;font-weight:700;color:var(--c-primary);
-              background:#fff;border-top:1px solid #dfe7ea;transition:.2s}
-    .full-btn:first-child{border-top:none}
-    .full-btn:active{background:var(--c-secondary);color:#fff}
+    /* ░ Portada ░ */
+    #home{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;padding:clamp(1rem,4vw,2rem)}
+    #homeLogo{height:80px;width:auto}
+    .home-btn{width:100%;max-width:420px;text-decoration:none;border-radius:2rem;padding:1.3rem 1.5rem;
+              font-size:1.35rem;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);
+              background:#fff;color:var(--c-primary);transition:.2s}
+    .home-btn:hover{background:var(--c-accent);color:#fff}
+    .home-btn:active{transform:scale(.97)}
 
-    /* ░ Header/nav para modo visor ░ */
-    #navbar{display:none;align-items:center;justify-content:center;gap:.8rem;
-            background:linear-gradient(90deg,var(--c-primary),var(--c-secondary));
-            padding:calc(env(safe-area-inset-top)+.6rem) .8rem .6rem;}
-    #navbar button{flex:1;padding:.55rem 1rem;border:none;border-radius:999px;
-                   background:#fff;color:var(--c-primary);font-weight:600;font-size:1rem;cursor:pointer;transition:.15s}
+    /* ░ Barra de navegación ░ */
+    #navbar{display:none;position:sticky;top:0;z-index:50;padding:calc(env(safe-area-inset-top)+.5rem) .8rem .6rem;
+            background:linear-gradient(90deg,var(--c-primary) 0%,var(--c-secondary) 100%);display:flex;gap:.7rem;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
+    #navbar button{flex:1 1 160px;padding:.65rem .5rem;border:none;border-radius:999px;font-weight:600;cursor:pointer;
+                   background:#fff;color:var(--c-primary);transition:.15s;font-size:1rem}
     #navbar button.active{background:var(--c-accent);color:#fff}
 
-    /* ░ Contenedor visor ░ */
-    #viewer-wrap{flex:1;display:none}
-    #pdfViewer{width:100%;height:100%;border:0}
+    /* ░ Visor ░ */
+    #viewer-wrap{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column}
+    #pdfFrame{flex:1;border:0;min-height:0;width:100%;}
 
-    /* ░ Desktop ajustes ░ */
+    /* Evitar desplazamiento lateral */
+    body, #viewer-wrap{overflow:hidden}
+
     @media(min-width:700px){
-      .full-btn{font-size:1.6rem}
+      #homeLogo{height:100px}
+      .home-btn{font-size:1.5rem}
       #navbar{padding:1rem 2rem}
-      #navbar button{max-width:200px}
+      #navbar button{max-width:220px;font-size:1.05rem}
     }
   </style>
 </head>
 <body>
 
-  <!-- Pantalla inicio -->
+  <!-- Portada -->
   <section id="home">
-    <a id="btnHomeTapas"  class="full-btn" href="#">Carta de tapas</a>
-    <a id="btnHomePlatos" class="full-btn" href="#">Carta de platos</a>
+    <img id="homeLogo" src="logo.png" alt="Mareal logo" loading="lazy">
+    <a id="openTapas"  class="home-btn" href="#">Carta de tapas</a>
+    <a id="openPlatos" class="home-btn" href="#">Carta de platos</a>
   </section>
 
-  <!-- Navegación y visor -->
-  <nav id="navbar">
-    <button id="btnNavTapas">Carta de tapas</button>
-    <button id="btnNavPlatos">Carta de platos</button>
-  </nav>
-  <section id="viewer-wrap">
-    <iframe id="pdfViewer" loading="lazy" allow="fullscreen"></iframe>
-  </section>
+  <!-- Navegación + visor -->
+  <div id="viewer-wrap">
+    <nav id="navbar">
+      <button id="navTapas">Carta de tapas</button>
+      <button id="navPlatos">Carta de platos</button>
+    </nav>
+    <!-- embed para mostrar todas las páginas con ancho 100% sin scroll lateral -->
+    <embed id="pdfFrame" type="application/pdf" />
+  </div>
 
   <script>
-    const TAPAS_PDF  = 'tapas.pdf';
-    const PLATOS_PDF = 'platos.pdf';
+    const FILE_TAPAS  = 'tapas.pdf';
+    const FILE_PLATOS = 'platos.pdf';
 
-    // Elementos
-    const home        = document.getElementById('home');
-    const btnHomeTapas  = document.getElementById('btnHomeTapas');
-    const btnHomePlatos = document.getElementById('btnHomePlatos');
+    // DOM refs
+    const home      = document.getElementById('home');
+    const viewer    = document.getElementById('viewer-wrap');
+    const pdfFrame  = document.getElementById('pdfFrame');
 
-    const navbar      = document.getElementById('navbar');
-    const btnNavTapas  = document.getElementById('btnNavTapas');
-    const btnNavPlatos = document.getElementById('btnNavPlatos');
+    const openTapas  = document.getElementById('openTapas');
+    const openPlatos = document.getElementById('openPlatos');
+    const navTapas   = document.getElementById('navTapas');
+    const navPlatos  = document.getElementById('navPlatos');
 
-    const viewerWrap  = document.getElementById('viewer-wrap');
-    const iframe      = document.getElementById('pdfViewer');
-
-    function showViewer(pdf){
-      // cambia fuente iframe
-      iframe.src = pdf + '#zoom=auto'; // Safari/Chrome mostrará todas las páginas; el usuario puede hacer scroll
-
-      // Cambia UI
-      home.style.display = 'none';
-      navbar.style.display = 'flex';
-      viewerWrap.style.display = 'block';
-
-      // Estado activo
-      const isTapas = pdf === TAPAS_PDF;
-      btnNavTapas.classList.toggle('active', isTapas);
-      btnNavPlatos.classList.toggle('active', !isTapas);
+    function setActive(btn){
+      [navTapas,navPlatos].forEach(b=>b.classList.toggle('active',b===btn));
     }
 
-    // Evento pantalla inicial
-    btnHomeTapas .addEventListener('click', e=>{e.preventDefault(); showViewer(TAPAS_PDF );});
-    btnHomePlatos.addEventListener('click', e=>{e.preventDefault(); showViewer(PLATOS_PDF);});
+    function loadPDF(file, btn){
+      pdfFrame.src = `${file}#toolbar=0&navpanes=0&view=FitH`; // Fit width, todas páginas disponibles verticalmente
+      setActive(btn);
+    }
 
-    // Evento navbar
-    btnNavTapas .addEventListener('click', ()=> showViewer(TAPAS_PDF));
-    btnNavPlatos.addEventListener('click', ()=> showViewer(PLATOS_PDF));
+    function enterViewer(file, btn){
+      home.style.display='none';
+      viewer.style.display='flex';
+      loadPDF(file, btn);
+    }
 
-    // Abrir primera vez según hash (?menu=tapas)
-    const params = new URLSearchParams(window.location.search);
-    const menu = params.get('menu');
-    if(menu==='tapas')  showViewer(TAPAS_PDF);
-    if(menu==='platos') showViewer(PLATOS_PDF);
+    // Eventos portada
+    openTapas .addEventListener('click',e=>{e.preventDefault(); enterViewer(FILE_TAPAS , navTapas );});
+    openPlatos.addEventListener('click',e=>{e.preventDefault(); enterViewer(FILE_PLATOS, navPlatos);});
+
+    // Navbar
+    navTapas .addEventListener('click',()=> loadPDF(FILE_TAPAS , navTapas));
+    navPlatos.addEventListener('click',()=> loadPDF(FILE_PLATOS, navPlatos));
+
+    // Abrir directo con parámetro ?menu=
+    const m = new URLSearchParams(location.search).get('menu');
+    if(m==='tapas')  enterViewer(FILE_TAPAS , navTapas );
+    if(m==='platos') enterViewer(FILE_PLATOS, navPlatos);
   </script>
 </body>
 </html>
