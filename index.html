@@ -5,50 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Mareal · Cartas</title>
 
-  <!-- Paleta basada en el logotipo -->
+  <!-- Paleta derivada del logotipo -->
   <style>
     :root{
-      --c-primary:#0e6897;
-      --c-secondary:#3eb6c4;
-      --c-accent:#ff725e;
-      --c-bg:#ecf7fa;
+      --c-primary:#0e6897;   /* azul profundo */
+      --c-secondary:#3eb6c4; /* turquesa */
+      --c-accent:#ff725e;    /* coral */
+      --c-logo-bg:#b3e2dd;   /* tono claro del recuadro del logo */
     }
     *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:var(--c-bg);color:var(--c-primary);overflow:hidden}
+    html,body{height:100%;background:var(--c-logo-bg);color:var(--c-primary);overflow:hidden}
 
     /* ░ Portada ░ */
     #home{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;padding:clamp(1rem,4vw,2rem)}
-    #homeLogo{height:80px;width:auto}
-    .home-btn{width:100%;max-width:420px;text-decoration:none;border-radius:2rem;padding:1.3rem 1.5rem;
-              font-size:1.35rem;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);
+    #homeLogo{height:90px;width:auto}
+    .home-btn{width:100%;max-width:460px;text-decoration:none;border-radius:2rem;padding:1.35rem 1.5rem;
+              font-size:1.4rem;font-weight:700;text-align:center;box-shadow:0 5px 14px rgba(0,0,0,.08);
               background:#fff;color:var(--c-primary);transition:.2s}
     .home-btn:hover{background:var(--c-accent);color:#fff}
     .home-btn:active{transform:scale(.97)}
 
-    /* ░ Barra de navegación ░ */
+    /* ░ Barra navegación ░ */
     #navbar{display:none;position:sticky;top:0;z-index:50;padding:calc(env(safe-area-inset-top)+.5rem) .8rem .6rem;
-            background:linear-gradient(90deg,var(--c-primary) 0%,var(--c-secondary) 100%);display:flex;gap:.7rem;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
+            background:linear-gradient(90deg,var(--c-primary) 0%,var(--c-secondary) 100%);display:flex;gap:.8rem;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
     #navbar button{flex:1 1 160px;padding:.65rem .5rem;border:none;border-radius:999px;font-weight:600;cursor:pointer;
                    background:#fff;color:var(--c-primary);transition:.15s;font-size:1rem}
     #navbar button.active{background:var(--c-accent);color:#fff}
 
     /* ░ Visor ░ */
     #viewer-wrap{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column}
-    #pdfFrame{flex:1;border:0;min-height:0;width:100%;}
-
-    /* Evitar desplazamiento lateral */
-    body, #viewer-wrap{overflow:hidden}
+    #pdfFrame{flex:1;border:0;width:100%;height:100%;}
 
     @media(min-width:700px){
-      #homeLogo{height:100px}
-      .home-btn{font-size:1.5rem}
+      #homeLogo{height:110px}
+      .home-btn{font-size:1.6rem}
       #navbar{padding:1rem 2rem}
       #navbar button{max-width:220px;font-size:1.05rem}
     }
   </style>
 </head>
 <body>
-
   <!-- Portada -->
   <section id="home">
     <img id="homeLogo" src="logo.png" alt="Mareal logo" loading="lazy">
@@ -62,13 +58,19 @@
       <button id="navTapas">Carta de tapas</button>
       <button id="navPlatos">Carta de platos</button>
     </nav>
-    <!-- embed para mostrar todas las páginas con ancho 100% sin scroll lateral -->
-    <embed id="pdfFrame" type="application/pdf" />
+    <iframe id="pdfFrame" loading="lazy" allow="fullscreen"></iframe>
   </div>
 
   <script>
     const FILE_TAPAS  = 'tapas.pdf';
     const FILE_PLATOS = 'platos.pdf';
+
+    // Construye URL de Google Docs Viewer para garantizar todas las páginas y evitar scroll lateral
+    function buildViewerURL(file){
+      const base = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+      const pdfURL = encodeURIComponent(base + file);
+      return `https://docs.google.com/gview?embedded=1&url=${pdfURL}`;
+    }
 
     // DOM refs
     const home      = document.getElementById('home');
@@ -85,7 +87,7 @@
     }
 
     function loadPDF(file, btn){
-      pdfFrame.src = `${file}#toolbar=0&navpanes=0&view=FitH`; // Fit width, todas páginas disponibles verticalmente
+      pdfFrame.src = buildViewerURL(file);
       setActive(btn);
     }
 
