@@ -3,60 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover">
+      content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mareal · Cartas</title>
 
 <link rel="prefetch" href="tapas.pdf"  as="fetch" type="application/pdf">
 <link rel="prefetch" href="platos.pdf" as="fetch" type="application/pdf">
 
 <style>
-:root{
-  --bg:#7fccc7;      /* color del logo */
-  --txt:#0d5e86;     /* azul oscuro */
-  --accent:#ff725e;  /* coral para activo */
-}
-*{margin:0;padding:0;box-sizing:border-box;
-  font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{
-  height:100%;width:100%;background:var(--bg);color:var(--txt);
-  overflow:hidden;overscroll-behavior-x:none;
-}
+:root{ --bg:#7fccc7; --txt:#0d5e86; --accent:#ff725e; }
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--txt);overflow:hidden;overscroll-behavior-x:none}
 
 /* -------- Portada -------- */
 #welcome{
-  position:fixed;inset:0;
-  height:100dvh;min-height:100svh;
+  position:fixed;inset:0;height:100dvh;min-height:100svh;
   padding:env(safe-area-inset-top) 6vw env(safe-area-inset-bottom);
   display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7vh}
 #welcome img{width:62%;max-width:250px}
 .big-btn{
-  touch-action:manipulation;
-  width:100%;max-width:460px;padding:1.25rem;
-  border:none;border-radius:26px;font-size:1.35rem;font-weight:700;
-  background:#fff;color:var(--txt);cursor:pointer}
+  touch-action:manipulation;width:100%;max-width:460px;padding:1.25rem;border:none;border-radius:26px;
+  font-size:1.35rem;font-weight:700;background:#fff;color:var(--txt);cursor:pointer}
 @media(min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
 
 /* -------- Visor -------- */
-#viewer{
-  position:fixed;inset:0;display:none;flex-direction:column;height:100dvh;min-height:100svh}
+#viewer{position:fixed;inset:0;display:none;flex-direction:column;height:100dvh;min-height:100svh}
 #bar{
   display:flex;gap:.7rem;justify-content:center;align-items:center;
   padding:.7rem env(safe-area-inset-left) .7rem env(safe-area-inset-right);
   background:linear-gradient(90deg,var(--txt),#009fb0)}
 .bar-btn{
-  touch-action:manipulation;
-  flex:1 1 150px;padding:.6rem;border:none;border-radius:999px;font-weight:600;font-size:1rem;
-  background:#fff;color:var(--txt)}
+  touch-action:manipulation;flex:1 1 150px;padding:.6rem;border:none;border-radius:999px;
+  font-weight:600;font-size:1rem;background:#fff;color:var(--txt)}
 .bar-btn.active{background:var(--accent);color:#fff}
-
-/* ----- Contenedor que recorta cualquier desborde ----- */
-#frameWrap{
-  flex:1;overflow:hidden;width:100dvw;
-  height:calc(100dvh - 58px - env(safe-area-inset-bottom));
-}
-#frame{
-  width:100%;height:100%;border:0;display:block;
-}
+#frameWrap{flex:1;overflow:hidden}
+#iframe{width:100%;height:100%;border:none;display:block}
 </style>
 </head>
 <body>
@@ -72,32 +52,39 @@ html,body{
     <button class="bar-btn" data-menu="tapas">Carta de tapas</button>
     <button class="bar-btn" data-menu="platos">Carta de platos</button>
   </nav>
-  <div id="frameWrap">
-    <iframe id="frame" allowfullscreen></iframe>
-  </div>
+  <div id="frameWrap"><iframe id="iframe" allowfullscreen></iframe></div>
 </section>
 
 <script>
+/* PDFs presentes en la carpeta */
 const PDF={ tapas:'tapas.pdf', platos:'platos.pdf' };
 
+/* genera la URL de PDF.js con zoom al ancho */
+function viewerURL(file){
+  const base = location.origin + location.pathname.replace(/\\/[^/]*$/,'/');
+  const pdf  = encodeURIComponent(base+file);
+  return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdf}#zoom=page-width`;
+}
+
+/* refs */
 const welcome=document.getElementById('welcome');
 const viewer =document.getElementById('viewer');
-const frame  =document.getElementById('frame');
+const frame  =document.getElementById('iframe');
 const barBtns=[...document.querySelectorAll('.bar-btn')];
 
-/* carga instantánea */
+/* mostrar carta */
 function show(menu){
-  frame.src = PDF[menu] + '#view=FitH';
+  frame.src = viewerURL(PDF[menu]);
   barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
   welcome.style.display='none';
   viewer .style.display='flex';
 }
 
-/* binding rápido con pointerup */
+/* binds instantáneos */
 document.querySelectorAll('[data-menu]').forEach(btn=>{
   btn.addEventListener('pointerup', e=>{
     if(e.pointerType!=='mouse' || e.button===0) show(btn.dataset.menu);
-  }, {passive:true});
+  },{passive:true});
 });
 
 /* deep-link opcional */
