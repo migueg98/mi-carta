@@ -2,86 +2,100 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
 <title>Mareal · Cartas</title>
 
+<!-- Prefetch para que empiece a bajar el PDF antes de abrirlo -->
+<link rel="prefetch" href="tapas.pdf"  as="fetch" type="application/pdf">
+<link rel="prefetch" href="platos.pdf" as="fetch" type="application/pdf">
+
 <style>
-/* —— Colores de marca —— */
 :root{
-  --c-bg:#7fccc7;      /* fondo del logo */
-  --c-txt:#0d5e86;     /* azul oscuro texto */
-  --c-accent:#ff725e;  /* coral hover/activo */
+  --bg:#7fccc7;       /* fondo exacto del logo */
+  --txt:#0d5e86;      /* azul oscuro */
+  --accent:#ff725e;   /* coral */
 }
+/* RESET + overflow lateral bloqueado */
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--txt);overflow-x:hidden}
 
-/* —— Reset —— */
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--c-bg);color:var(--c-txt)}
-
-/* —— Pantalla de inicio —— */
+/* ---- PORTADA ---- */
 #welcome{
-  position:fixed;inset:0;height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7vh;padding:6vw}
-#welcome img{width:65%;max-width:260px}
+  position:fixed;inset:0;height:100svh;min-height:-webkit-fill-available;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  gap:7vh;padding:6vw}
+#welcome img{width:64%;max-width:250px;height:auto}
 .big-btn{
-  width:100%;max-width:480px;padding:1.35rem 1rem;border:none;border-radius:28px;font-size:1.4rem;font-weight:700;
-  background:#fff;color:var(--c-txt);box-shadow:0 4px 10px rgba(0,0,0,.13);cursor:pointer;transition:.18s}
-.big-btn:hover{background:var(--c-accent);color:#fff;transform:translateY(-2px)}
-@media(min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
+  width:100%;max-width:460px;padding:1.25rem;border:none;border-radius:26px;
+  font-size:1.35rem;font-weight:700;background:#fff;color:var(--txt);
+  box-shadow:0 4px 10px rgba(0,0,0,.12);cursor:pointer;transition:background .18s,color .18s}
+.big-btn:hover{background:var(--accent);color:#fff}
+@media (min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
 
-/* —— Visor —— */
-#viewer{position:fixed;inset:0;display:none;flex-direction:column;background:var(--c-bg)}
-#bar{display:flex;gap:.75rem;justify-content:center;padding:.75rem;background:linear-gradient(90deg,var(--c-txt),#009fb0);box-shadow:0 3px 9px rgba(0,0,0,.15)}
+/* ---- VISOR ---- */
+#viewer{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg)}
+#bar{display:flex;gap:.7rem;justify-content:center;padding:.7rem;
+     background:linear-gradient(90deg,var(--txt),#009fb0);box-shadow:0 3px 9px rgba(0,0,0,.15)}
 .bar-btn{
-  flex:1 1 160px;padding:.65rem;border:none;border-radius:999px;font-size:1rem;font-weight:600;cursor:pointer;
-  background:#fff;color:var(--c-txt);transition:.15s}
-.bar-btn.active{background:var(--c-accent);color:#fff}
-#iframe{flex:1;width:100%;border:none;display:block}
+  flex:1 1 150px;padding:.6rem;border:none;border-radius:999px;font-weight:600;
+  font-size:1rem;background:#fff;color:var(--txt);transition:background .15s,color .15s}
+.bar-btn.active{background:var(--accent);color:#fff}
+/* el visor ocupa todo el alto menos la barra */
+#frame{width:100vw;height:calc(100svh - 58px);border:none;display:block}
 </style>
 </head>
 <body>
 
-<!-- PORTADA -->
+<!-- PANTALLA DE INICIO -->
 <section id="welcome">
   <img src="logo.png" alt="Mareal logo">
   <button class="big-btn" data-menu="tapas">Carta de tapas</button>
   <button class="big-btn" data-menu="platos">Carta de platos</button>
 </section>
 
-<!-- VISOR -->
+<!-- VISOR PDF -->
 <section id="viewer">
   <nav id="bar">
     <button class="bar-btn" data-menu="tapas">Carta de tapas</button>
     <button class="bar-btn" data-menu="platos">Carta de platos</button>
   </nav>
-  <iframe id="iframe" loading="lazy" allowfullscreen></iframe>
+  <iframe id="frame" loading="lazy" allowfullscreen></iframe>
 </section>
 
 <script>
-/* —— PDF locales —— */
+/* rutas PDF (ya existen y están optimizadas) */
 const PDF={ tapas:'tapas.pdf', platos:'platos.pdf' };
 
-/* —— DOM —— */
+/* refs */
 const welcome=document.getElementById('welcome');
 const viewer =document.getElementById('viewer');
-const frame  =document.getElementById('iframe');
+const frame  =document.getElementById('frame');
 const barBtns=[...document.querySelectorAll('.bar-btn')];
 
-/* —— Mostrar carta —— */
-function show(menu){
-  frame.src= PDF[menu] + '#view=FitH';            // ajusta ancho – sin desplaz. lateral
-  barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
-  welcome.style.display='none';
-  viewer .style.display='flex';
-  window.scrollTo(0,0);
+/* util: abrir en nueva pestaña si tarda >3 s (mejora UX en 4G) */
+function openFallback(src){
+  const t=setTimeout(()=>window.open(src,'_blank'),3000);
+  frame.onload=()=>clearTimeout(t);
 }
 
-/* —— Enlazar botones —— */
-document.querySelectorAll('[data-menu]').forEach(btn=>{
-  btn.addEventListener('click', ()=>show(btn.dataset.menu));
-});
+/* mostrar carta */
+function show(menu){
+  const src=PDF[menu]+'#view=FitH';
+  frame.src=src;
+  openFallback(src);
+  barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
+  welcome.style.display='none';
+  viewer.style.display='flex';
+}
 
-/* —— Deep-link opcional (?menu=platos) —— */
+/* listeners a todos los botones */
+document.querySelectorAll('[data-menu]').forEach(btn=>
+  btn.addEventListener('click',()=>show(btn.dataset.menu)));
+
+/* deep-link opcional */
 const m=new URLSearchParams(location.search).get('menu');
-if(m&&PDF[m]) show(m);
+if(PDF[m]) show(m);
 </script>
 </body>
 </html>
