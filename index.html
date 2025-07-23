@@ -6,131 +6,103 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mareal · Cartas</title>
 
-<!-- Prefetch: empieza a descargar los PDFs nada más abrir la página -->
 <link rel="prefetch" href="tapas.pdf"  as="fetch" type="application/pdf">
 <link rel="prefetch" href="platos.pdf" as="fetch" type="application/pdf">
 
 <style>
-/* ---------- Colores corporativos ---------- */
 :root{
-  --bg:#7fccc7;      /* fondo exacto del logo */
-  --txt:#0d5e86;     /* azul oscuro para texto */
-  --accent:#ff725e;  /* coral para botones activos */
+  --bg:#7fccc7;      /* color del logo */
+  --txt:#0d5e86;     /* azul oscuro */
+  --accent:#ff725e;  /* coral para activo */
 }
-
-/* ---------- Reset ---------- */
 *{margin:0;padding:0;box-sizing:border-box;
-  font-family:"Segoe UI",Roboto,sans-serif;
-  -webkit-tap-highlight-color:transparent}
+  font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
 html,body{
-  height:100%;
-  background:var(--bg);
-  color:var(--txt);
-  overflow-x:hidden;               /* elimina desplazamiento lateral */
-  overscroll-behavior-x:none;
+  height:100%;width:100%;background:var(--bg);color:var(--txt);
+  overflow:hidden;overscroll-behavior-x:none;
 }
 
-/* ---------- Portada ---------- */
+/* -------- Portada -------- */
 #welcome{
   position:fixed;inset:0;
-  height:100dvh;                   /* alto real cuando aparece/oculta la barra */
-  min-height:100svh;
+  height:100dvh;min-height:100svh;
   padding:env(safe-area-inset-top) 6vw env(safe-area-inset-bottom);
-  display:flex;flex-direction:column;
-  justify-content:center;align-items:center;
-  gap:7vh;
-}
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7vh}
 #welcome img{width:62%;max-width:250px}
 .big-btn{
   touch-action:manipulation;
-  width:100%;max-width:460px;
-  padding:1.25rem;border:none;border-radius:26px;
-  font-size:1.35rem;font-weight:700;
-  background:#fff;color:var(--txt);
-  cursor:pointer;
-}
-@media(min-width:680px){
-  #welcome{flex-direction:row;gap:4vw}
-  .big-btn{max-width:none}
-}
+  width:100%;max-width:460px;padding:1.25rem;
+  border:none;border-radius:26px;font-size:1.35rem;font-weight:700;
+  background:#fff;color:var(--txt);cursor:pointer}
+@media(min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
 
-/* ---------- Visor ---------- */
+/* -------- Visor -------- */
 #viewer{
-  position:fixed;inset:0;
-  display:none;flex-direction:column;
-  height:100dvh;min-height:100svh;
-  background:var(--bg);
-}
-
+  position:fixed;inset:0;display:none;flex-direction:column;height:100dvh;min-height:100svh}
 #bar{
   display:flex;gap:.7rem;justify-content:center;align-items:center;
   padding:.7rem env(safe-area-inset-left) .7rem env(safe-area-inset-right);
-  background:linear-gradient(90deg,var(--txt),#009fb0);
-}
+  background:linear-gradient(90deg,var(--txt),#009fb0)}
 .bar-btn{
   touch-action:manipulation;
-  flex:1 1 150px;padding:.6rem;
-  border:none;border-radius:999px;
-  font-weight:600;font-size:1rem;
-  background:#fff;color:var(--txt);
-}
+  flex:1 1 150px;padding:.6rem;border:none;border-radius:999px;font-weight:600;font-size:1rem;
+  background:#fff;color:var(--txt)}
 .bar-btn.active{background:var(--accent);color:#fff}
 
-/* iframe ocupa todo el ancho real del viewport */
-#iframe{
-  width:100%;                                  /* ← clave para eliminar scroll lateral */
+/* ----- Contenedor que recorta cualquier desborde ----- */
+#frameWrap{
+  flex:1;overflow:hidden;width:100dvw;
   height:calc(100dvh - 58px - env(safe-area-inset-bottom));
-  border:none;display:block;
+}
+#frame{
+  width:100%;height:100%;border:0;display:block;
 }
 </style>
 </head>
 <body>
 
-<!-- ---------- Portada ---------- -->
 <section id="welcome">
   <img src="logo.png" alt="Mareal logo">
   <button class="big-btn" data-menu="tapas">Carta de tapas</button>
   <button class="big-btn" data-menu="platos">Carta de platos</button>
 </section>
 
-<!-- ---------- Visor ---------- -->
 <section id="viewer">
   <nav id="bar">
     <button class="bar-btn" data-menu="tapas">Carta de tapas</button>
     <button class="bar-btn" data-menu="platos">Carta de platos</button>
   </nav>
-  <iframe id="iframe" allowfullscreen></iframe>
+  <div id="frameWrap">
+    <iframe id="frame" allowfullscreen></iframe>
+  </div>
 </section>
 
 <script>
-/* Rutas de los PDFs (ya existen en la misma carpeta) */
 const PDF={ tapas:'tapas.pdf', platos:'platos.pdf' };
 
-/* Referencias DOM */
 const welcome=document.getElementById('welcome');
 const viewer =document.getElementById('viewer');
-const frame  =document.getElementById('iframe');
+const frame  =document.getElementById('frame');
 const barBtns=[...document.querySelectorAll('.bar-btn')];
 
-/* Función para mostrar la carta */
+/* carga instantánea */
 function show(menu){
-  frame.src = PDF[menu] + '#view=FitH';        // ancho ajustado, sin scroll lateral
+  frame.src = PDF[menu] + '#view=FitH';
   barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
   welcome.style.display='none';
   viewer .style.display='flex';
-  window.scrollTo(0,0);                        // asegura inicio arriba
 }
 
-/* Binding instantáneo con pointerup (sin retraso) */
+/* binding rápido con pointerup */
 document.querySelectorAll('[data-menu]').forEach(btn=>{
   btn.addEventListener('pointerup', e=>{
     if(e.pointerType!=='mouse' || e.button===0) show(btn.dataset.menu);
   }, {passive:true});
 });
 
-/* Deep link opcional (?menu=tapas|platos) */
-const menuParam=new URLSearchParams(location.search).get('menu');
-if(menuParam && PDF[menuParam]) show(menuParam);
+/* deep-link opcional */
+const m=new URLSearchParams(location.search).get('menu');
+if(PDF[m]) show(m);
 </script>
 </body>
 </html>
