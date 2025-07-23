@@ -3,95 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mareal · Cartas</title>
-
-<!-- Prefetch para que empiece a bajar el PDF antes de abrirlo -->
-<link rel="prefetch" href="tapas.pdf"  as="fetch" type="application/pdf">
-<link rel="prefetch" href="platos.pdf" as="fetch" type="application/pdf">
 
 <style>
 :root{
-  --bg:#7fccc7;       /* fondo exacto del logo */
-  --txt:#0d5e86;      /* azul oscuro */
-  --accent:#ff725e;   /* coral */
+  --bg:#7fccc7;
+  --txt:#0d5e86;
+  --accent:#ff725e;
 }
-/* RESET + overflow lateral bloqueado */
-*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--txt);overflow-x:hidden}
+*{box-sizing:border-box;margin:0;padding:0;
+  font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--txt);
+          overflow-x:hidden;overscroll-behavior-x:none}
 
-/* ---- PORTADA ---- */
+/* ----- PORTADA ----- */
 #welcome{
-  position:fixed;inset:0;height:100svh;min-height:-webkit-fill-available;
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  gap:7vh;padding:6vw}
-#welcome img{width:64%;max-width:250px;height:auto}
+  position:fixed;inset:0;height:100dvh;min-height:100svh;
+  padding:env(safe-area-inset-top) 6vw env(safe-area-inset-bottom);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7vh}
+#welcome img{width:62%;max-width:250px}
 .big-btn{
+  touch-action:manipulation;
   width:100%;max-width:460px;padding:1.25rem;border:none;border-radius:26px;
-  font-size:1.35rem;font-weight:700;background:#fff;color:var(--txt);
-  box-shadow:0 4px 10px rgba(0,0,0,.12);cursor:pointer;transition:background .18s,color .18s}
-.big-btn:hover{background:var(--accent);color:#fff}
-@media (min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
+  font-size:1.35rem;font-weight:700;background:#fff;color:var(--txt);cursor:pointer}
+@media(min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
 
-/* ---- VISOR ---- */
-#viewer{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg)}
-#bar{display:flex;gap:.7rem;justify-content:center;padding:.7rem;
-     background:linear-gradient(90deg,var(--txt),#009fb0);box-shadow:0 3px 9px rgba(0,0,0,.15)}
+/* ----- VISOR ----- */
+#viewer{position:fixed;inset:0;display:none;flex-direction:column;
+        height:100dvh;min-height:100svh;background:var(--bg)}
+#bar{
+  display:flex;gap:.7rem;justify-content:center;align-items:center;
+  padding:.7rem env(safe-area-inset-left) .7rem env(safe-area-inset-right);
+  background:linear-gradient(90deg,var(--txt),#009fb0)}
 .bar-btn{
-  flex:1 1 150px;padding:.6rem;border:none;border-radius:999px;font-weight:600;
-  font-size:1rem;background:#fff;color:var(--txt);transition:background .15s,color .15s}
+  touch-action:manipulation;
+  flex:1 1 150px;padding:.6rem;border:none;border-radius:999px;font-weight:600;font-size:1rem;
+  background:#fff;color:var(--txt)}
 .bar-btn.active{background:var(--accent);color:#fff}
-/* el visor ocupa todo el alto menos la barra */
-#frame{width:100vw;height:calc(100svh - 58px);border:none;display:block}
+#iframe{width:100vw;height:calc(100dvh - 58px - env(safe-area-inset-bottom));
+        border:none;display:block}
 </style>
 </head>
 <body>
 
-<!-- PANTALLA DE INICIO -->
 <section id="welcome">
   <img src="logo.png" alt="Mareal logo">
   <button class="big-btn" data-menu="tapas">Carta de tapas</button>
   <button class="big-btn" data-menu="platos">Carta de platos</button>
 </section>
 
-<!-- VISOR PDF -->
 <section id="viewer">
   <nav id="bar">
     <button class="bar-btn" data-menu="tapas">Carta de tapas</button>
     <button class="bar-btn" data-menu="platos">Carta de platos</button>
   </nav>
-  <iframe id="frame" loading="lazy" allowfullscreen></iframe>
+  <iframe id="iframe" allowfullscreen></iframe>
 </section>
 
 <script>
-/* rutas PDF (ya existen y están optimizadas) */
-const PDF={ tapas:'tapas.pdf', platos:'platos.pdf' };
-
-/* refs */
+const PDF={ tapas:'tapas.pdf', platos:'platos.pdf' };          // nombres ya existentes
 const welcome=document.getElementById('welcome');
 const viewer =document.getElementById('viewer');
-const frame  =document.getElementById('frame');
+const frame  =document.getElementById('iframe');
 const barBtns=[...document.querySelectorAll('.bar-btn')];
 
-/* util: abrir en nueva pestaña si tarda >3 s (mejora UX en 4G) */
-function openFallback(src){
-  const t=setTimeout(()=>window.open(src,'_blank'),3000);
-  frame.onload=()=>clearTimeout(t);
+/* carga inmediata al levantar el dedo */
+function bindFast(selector,fn){
+  document.querySelectorAll(selector).forEach(el=>
+    el.addEventListener('pointerup',e=>{
+      if(e.pointerType!=='mouse' || e.button===0) fn(el);
+    },{passive:true})
+  );
 }
 
-/* mostrar carta */
 function show(menu){
-  const src=PDF[menu]+'#view=FitH';
-  frame.src=src;
-  openFallback(src);
+  frame.src=PDF[menu]+'#view=FitH';
   barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
   welcome.style.display='none';
-  viewer.style.display='flex';
+  viewer .style.display='flex';
+  window.scrollTo(0,0);
 }
 
-/* listeners a todos los botones */
-document.querySelectorAll('[data-menu]').forEach(btn=>
-  btn.addEventListener('click',()=>show(btn.dataset.menu)));
+/* binds */
+bindFast('[data-menu]', btn=>show(btn.dataset.menu));
 
 /* deep-link opcional */
 const m=new URLSearchParams(location.search).get('menu');
