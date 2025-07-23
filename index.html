@@ -1,114 +1,115 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Mareal · Cartas</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mareal · Cartas</title>
 
-  <!-- Paleta derivada del logotipo -->
-  <style>
-    :root{
-      --c-primary:#0e6897;   /* azul profundo */
-      --c-secondary:#3eb6c4; /* turquesa */
-      --c-accent:#ff725e;    /* coral */
-      --c-logo-bg:#b3e2dd;   /* tono claro del recuadro del logo */
-    }
-    *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:var(--c-logo-bg);color:var(--c-primary);overflow:hidden}
+<style>
+:root{
+  --c-logo:#7fccc7;          /* color exacto del fondo del logotipo */
+  --c-primary:#006b8b;       /* azul profundo para texto/botones */
+  --c-secondary:#00a6b3;     /* turquesa para hover/activo */
+}
 
-    /* ░ Portada ░ */
-    #home{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;padding:clamp(1rem,4vw,2rem)}
-    #homeLogo{height:90px;width:auto}
-    .home-btn{width:100%;max-width:460px;text-decoration:none;border-radius:2rem;padding:1.35rem 1.5rem;
-              font-size:1.4rem;font-weight:700;text-align:center;box-shadow:0 5px 14px rgba(0,0,0,.08);
-              background:#fff;color:var(--c-primary);transition:.2s}
-    .home-btn:hover{background:var(--c-accent);color:#fff}
-    .home-btn:active{transform:scale(.97)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:"Segoe UI",Roboto,sans-serif;background:var(--c-logo);color:var(--c-primary);overflow:hidden}
 
-    /* ░ Barra navegación ░ */
-    #navbar{display:none;position:sticky;top:0;z-index:50;padding:calc(env(safe-area-inset-top)+.5rem) .8rem .6rem;
-            background:linear-gradient(90deg,var(--c-primary) 0%,var(--c-secondary) 100%);display:flex;gap:.8rem;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
-    #navbar button{flex:1 1 160px;padding:.65rem .5rem;border:none;border-radius:999px;font-weight:600;cursor:pointer;
-                   background:#fff;color:var(--c-primary);transition:.15s;font-size:1rem}
-    #navbar button.active{background:var(--c-accent);color:#fff}
+/* -------- PORTADA -------- */
+#welcome{
+  height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+  padding:1.5rem;text-align:center;
+}
+#welcome img{width:55%;max-width:240px;height:auto}
+.menu-btn{
+  width:100%;max-width:420px;padding:1.2rem 1rem;font-size:1.25rem;font-weight:600;
+  background:#fff;border:none;border-radius:22px;color:var(--c-primary);
+  box-shadow:0 4px 10px rgba(0,0,0,.1);cursor:pointer;transition:.2s all;
+}
+.menu-btn:hover{background:var(--c-secondary);color:#fff;transform:translateY(-2px)}
+@media(min-width:680px){#welcome{flex-direction:row} .menu-btn{max-width:none}}
 
-    /* ░ Visor ░ */
-    #viewer-wrap{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column}
-    #pdfFrame{flex:1;border:0;width:100%;height:100%;}
+/* -------- VISOR -------- */
+#viewer-wrap{display:none;flex-direction:column;height:100%}
+#bar{
+  display:flex;gap:.6rem;align-items:center;justify-content:center;
+  padding:.6rem;background:linear-gradient(90deg,var(--c-primary),var(--c-secondary));
+  box-shadow:0 2px 7px rgba(0,0,0,.15);
+}
+.bar-btn{
+  flex:1 1 140px;padding:.45rem 1rem;font-size:1rem;font-weight:600;border:none;
+  border-radius:16px;background:#fff;color:var(--c-primary);cursor:pointer;transition:.2s;
+}
+.bar-btn.active{background:var(--c-secondary);color:#fff}
+.bar-btn:hover{transform:translateY(-1px)}
+#iframeBox{flex:1;overflow:hidden}
+iframe{
+  width:100%;height:100%;border:none;display:block;
+}
 
-    @media(min-width:700px){
-      #homeLogo{height:110px}
-      .home-btn{font-size:1.6rem}
-      #navbar{padding:1rem 2rem}
-      #navbar button{max-width:220px;font-size:1.05rem}
-    }
-  </style>
+/* evitar scroll lateral en iOS cuando el PDF es ancho */
+body,html{overscroll-behavior-x:none}
+</style>
 </head>
 <body>
-  <!-- Portada -->
-  <section id="home">
-    <img id="homeLogo" src="logo.png" alt="Mareal logo" loading="lazy">
-    <a id="openTapas"  class="home-btn" href="#">Carta de tapas</a>
-    <a id="openPlatos" class="home-btn" href="#">Carta de platos</a>
-  </section>
 
-  <!-- Navegación + visor -->
-  <div id="viewer-wrap">
-    <nav id="navbar">
-      <button id="navTapas">Carta de tapas</button>
-      <button id="navPlatos">Carta de platos</button>
-    </nav>
-    <iframe id="pdfFrame" loading="lazy" allow="fullscreen"></iframe>
+<!-- PORTADA -->
+<section id="welcome">
+  <img src="logo.png" alt="Mareal logo" loading="eager">
+  <button class="menu-btn" data-menu="tapas">Carta de tapas</button>
+  <button class="menu-btn" data-menu="platos">Carta de platos</button>
+</section>
+
+<!-- VISOR -->
+<section id="viewer-wrap">
+  <div id="bar">
+    <button class="bar-btn" id="btnTapas" data-menu="tapas">Carta de tapas</button>
+    <button class="bar-btn" id="btnPlatos" data-menu="platos">Carta de platos</button>
   </div>
+  <div id="iframeBox"></div>
+</section>
 
-  <script>
-    const FILE_TAPAS  = 'tapas.pdf';
-    const FILE_PLATOS = 'platos.pdf';
+<script>
+/* ---------- CONFIG ---------- */
+const menus={
+  tapas : 'tapas.pdf',
+  platos: 'platos.pdf'
+};
+/* ---------- UTIL ---------- */
+const gdocs = url => `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
+const pdfUrl = file => `${location.origin + location.pathname.replace(/\/[^/]*$/,'/')}${file}`;
 
-    // Construye URL de Google Docs Viewer para garantizar todas las páginas y evitar scroll lateral
-    function buildViewerURL(file){
-      const base = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
-      const pdfURL = encodeURIComponent(base + file);
-      return `https://docs.google.com/gview?embedded=1&url=${pdfURL}`;
-    }
+/* ---------- DOM ---------- */
+const welcome   = document.getElementById('welcome');
+const viewer    = document.getElementById('viewer-wrap');
+const iframeBox = document.getElementById('iframeBox');
+const barBtns   = [...document.querySelectorAll('.bar-btn')];
 
-    // DOM refs
-    const home      = document.getElementById('home');
-    const viewer    = document.getElementById('viewer-wrap');
-    const pdfFrame  = document.getElementById('pdfFrame');
+/* ---------- LOGIC ---------- */
+function loadMenu(menu){
+  if(!menus[menu]) return;
+  // toggle active button in the bar
+  barBtns.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
+  // create / replace iframe
+  iframeBox.innerHTML='';
+  const ifr=document.createElement('iframe');
+  ifr.src=gdocs(pdfUrl(menus[menu]));
+  iframeBox.appendChild(ifr);
+  // switch sections
+  welcome.style.display='none';
+  viewer.style.display='flex';
+  // scroll top (útil si la carta anterior era larga)
+  window.scrollTo(0,0);
+}
 
-    const openTapas  = document.getElementById('openTapas');
-    const openPlatos = document.getElementById('openPlatos');
-    const navTapas   = document.getElementById('navTapas');
-    const navPlatos  = document.getElementById('navPlatos');
+/* ---------- EVENTS ---------- */
+document.querySelectorAll('[data-menu]').forEach(btn=>{
+  btn.addEventListener('click',()=>loadMenu(btn.dataset.menu));
+});
 
-    function setActive(btn){
-      [navTapas,navPlatos].forEach(b=>b.classList.toggle('active',b===btn));
-    }
-
-    function loadPDF(file, btn){
-      pdfFrame.src = buildViewerURL(file);
-      setActive(btn);
-    }
-
-    function enterViewer(file, btn){
-      home.style.display='none';
-      viewer.style.display='flex';
-      loadPDF(file, btn);
-    }
-
-    // Eventos portada
-    openTapas .addEventListener('click',e=>{e.preventDefault(); enterViewer(FILE_TAPAS , navTapas );});
-    openPlatos.addEventListener('click',e=>{e.preventDefault(); enterViewer(FILE_PLATOS, navPlatos);});
-
-    // Navbar
-    navTapas .addEventListener('click',()=> loadPDF(FILE_TAPAS , navTapas));
-    navPlatos.addEventListener('click',()=> loadPDF(FILE_PLATOS, navPlatos));
-
-    // Abrir directo con parámetro ?menu=
-    const m = new URLSearchParams(location.search).get('menu');
-    if(m==='tapas')  enterViewer(FILE_TAPAS , navTapas );
-    if(m==='platos') enterViewer(FILE_PLATOS, navPlatos);
-  </script>
+/* ---------- DEEP LINK ---------- */
+const qp = new URLSearchParams(location.search);
+if(qp.get('menu') && menus[qp.get('menu')]) loadMenu(qp.get('menu'));
+</script>
 </body>
 </html>
