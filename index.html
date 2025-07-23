@@ -4,14 +4,21 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Carta</title>
+
+  <!-- Pre‑carga de los ficheros PDF para que empiecen a bajarse en cuanto abra la página -->
+  <link rel="preload" href="tapas.pdf"  as="fetch" type="application/pdf" crossorigin>
+  <link rel="preload" href="platos.pdf" as="fetch" type="application/pdf" crossorigin>
+
   <style>
-    html,body{height:100%;margin:0;font-family:sans-serif;display:flex;flex-direction:column}
-    header{padding:1rem;background:#f5f5f5;box-shadow:0 2px 4px rgba(0,0,0,.1)}
-    button{margin-right:.5rem;padding:.5rem 1rem;border:none;border-radius:4px;cursor:pointer;background:#0d6efd;color:#fff;font-size:1rem}
-    button.active,button:hover{background:#0b5ed7}
+    :root{ --primary:#0d6efd; --primary-hover:#0b5ed7; }
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;background:#fff}
+    header{padding:1rem;box-shadow:0 2px 4px rgba(0,0,0,.05);z-index:10;background:#fff;position:sticky;top:0}
+    button{margin-inline-end:.5rem;padding:.55rem 1.25rem;border:1px solid var(--primary);border-radius:6px;background:var(--primary);color:#fff;font-size:1rem;cursor:pointer;transition:.15s}
+    button:hover{background:var(--primary-hover)}
+    button.active{box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 4px var(--primary-hover)}
     #viewer{flex:1;display:flex}
-    #viewer embed{flex:1;border:0}
-    #placeholder{flex:1;display:flex;align-items:center;justify-content:center;color:#777}
+    #viewer embed{flex:1;border:0;min-height:0}
+    #placeholder{flex:1;display:flex;align-items:center;justify-content:center;color:#666;font-size:clamp(1rem,2.5vw,1.25rem)}
   </style>
 </head>
 <body>
@@ -19,39 +26,43 @@
     <button id="btnTapas">Carta de tapas</button>
     <button id="btnPlatos">Carta de platos</button>
   </header>
+
   <div id="viewer">
     <div id="placeholder">Selecciona una carta para verla</div>
   </div>
 
   <script>
-    const viewer = document.getElementById('viewer');
+    const viewer      = document.getElementById('viewer');
     const placeholder = document.getElementById('placeholder');
-    const tapasBtn = document.getElementById('btnTapas');
-    const platosBtn = document.getElementById('btnPlatos');
+    const tapasBtn    = document.getElementById('btnTapas');
+    const platosBtn   = document.getElementById('btnPlatos');
 
-    function showPdf(file, btn){
-      // Quita el PDF anterior (si existe)
-      const old = viewer.querySelector('embed');
-      if(old){ old.remove(); }
+    function showPdf(file, clickedBtn){
+      // Si ya está mostrando ese PDF, nada que hacer
+      const current = viewer.querySelector('embed');
+      if(current && current.getAttribute('data-src')===file) return;
 
-      // Oculta el texto de ayuda
+      // Quitar PDF anterior
+      if(current) current.remove();
+
+      // Ocultar placeholder al primer uso
       placeholder.style.display='none';
 
-      // Estado activo en el botón pulsado
-      [tapasBtn, platosBtn].forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      // Marcar botón activo
+      [tapasBtn,platosBtn].forEach(b=>b.classList.toggle('active',b===clickedBtn));
 
-      // Inserta el nuevo visor
+      // Crear y añadir el visor PDF (streaming gracias a la linearización)
       const embed = document.createElement('embed');
-      embed.src = file + '#view=FitH';
+      embed.setAttribute('data-src',file);
+      embed.src  = `${file}#view=FitH`;
       embed.type = 'application/pdf';
-      embed.style.width = '100%';
+      embed.style.width  = '100%';
       embed.style.height = '100%';
       viewer.appendChild(embed);
     }
 
-    tapasBtn.addEventListener('click', () => showPdf('tapas.pdf', tapasBtn));
-    platosBtn.addEventListener('click', () => showPdf('platos.pdf', platosBtn));
+    tapasBtn.addEventListener('click', ()=>showPdf('tapas.pdf',  tapasBtn));
+    platosBtn.addEventListener('click',()=>showPdf('platos.pdf', platosBtn));
   </script>
 </body>
 </html>
