@@ -5,103 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Mareal · Cartas</title>
 
-  <!-- Evita que navegadores móviles entreguen una versión en caché -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma"        content="no-cache" />
-  <meta http-equiv="Expires"       content="0" />
-
-  <!-- Paleta tomada del logotipo -->
+  <!-- Colores coherentes con el logotipo -->
   <style>
     :root{
-      --c-primary:#0e6897;   /* azul profundo */
+      --c-primary:#0e6897;   /* azul oscuro */
       --c-secondary:#3eb6c4; /* turquesa */
       --c-accent:#ff725e;    /* coral */
-      --c-bg:#ecf7fa;        /* fondo muy claro */
+      --c-bg:#ecf7fa;        /* fondo claro */
     }
+
     *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:var(--c-bg);display:flex;flex-direction:column}
+    html,body{height:100%;background:var(--c-bg);display:flex;flex-direction:column;color:var(--c-primary)}
 
-    /* ░ Header optimizado para móvil ░ */
-    header{
-      background:linear-gradient(135deg,var(--c-primary),var(--c-secondary));
-      padding:calc(env(safe-area-inset-top)+1rem) 1rem 1.25rem;
-      display:flex;flex-direction:column;align-items:center;gap:1rem;
-      border-bottom-left-radius:1.25rem;border-bottom-right-radius:1.25rem;
-      box-shadow:0 4px 10px rgba(0,0,0,.1);
-    }
-    #logo{height:52px;width:auto}
+    /* ░ Pantalla inicial con dos tarjetas ░ */
+    #home{flex:1;display:flex;flex-direction:column}
+    .full-btn{flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none;
+              font-size:1.3rem;font-weight:700;color:var(--c-primary);
+              background:#fff;border-top:1px solid #dfe7ea;transition:.2s}
+    .full-btn:first-child{border-top:none}
+    .full-btn:active{background:var(--c-secondary);color:#fff}
 
-    /* ░ Botones grandes (finger‑friendly) ░ */
-    nav{display:flex;flex-direction:column;gap:.9rem;width:100%;max-width:460px}
-    button{
-      width:100%;padding:.9rem 1.3rem;border:none;border-radius:2rem;
-      background:#fff;color:var(--c-primary);font-size:1.075rem;font-weight:600;
-      letter-spacing:.2px;box-shadow:0 3px 6px rgba(0,0,0,.08);
-      cursor:pointer;transition:background .2s,color .2s,transform .15s;
-    }
-    button:hover{background:var(--c-accent);color:#fff;transform:translateY(-1px)}
-    button.active{background:var(--c-secondary);color:#fff}
+    /* ░ Header/nav para modo visor ░ */
+    #navbar{display:none;align-items:center;justify-content:center;gap:.8rem;
+            background:linear-gradient(90deg,var(--c-primary),var(--c-secondary));
+            padding:calc(env(safe-area-inset-top)+.6rem) .8rem .6rem;}
+    #navbar button{flex:1;padding:.55rem 1rem;border:none;border-radius:999px;
+                   background:#fff;color:var(--c-primary);font-weight:600;font-size:1rem;cursor:pointer;transition:.15s}
+    #navbar button.active{background:var(--c-accent);color:#fff}
 
-    /* ░ Visor ░ */
-    #viewer{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem}
-    #viewer embed{flex:1;border:0;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,.12);min-height:0;max-width:100%}
-    #placeholder{color:#6c757d;font-size:1.05rem;text-align:center;max-width:90%}
+    /* ░ Contenedor visor ░ */
+    #viewer-wrap{flex:1;display:none}
+    #pdfViewer{width:100%;height:100%;border:0}
 
-    /* ░ Desktop layout ░ */
-    @media(min-width:680px){
-      header{flex-direction:row;align-items:center;justify-content:space-between;padding:1rem 2.4rem;border-radius:0}
-      nav{flex-direction:row;max-width:none;width:auto}
-      button{width:auto;padding:.65rem 1.4rem;border-radius:999px;font-size:1rem}
+    /* ░ Desktop ajustes ░ */
+    @media(min-width:700px){
+      .full-btn{font-size:1.6rem}
+      #navbar{padding:1rem 2rem}
+      #navbar button{max-width:200px}
     }
   </style>
-
-  <!-- Precarga cartas -->
-  <link rel="preload" href="tapas.pdf?v=2"  as="fetch" type="application/pdf" crossorigin>
-  <link rel="preload" href="platos.pdf?v=2" as="fetch" type="application/pdf" crossorigin>
 </head>
 <body>
-  <header>
-    <img id="logo" src="logo.png?v=2" alt="Mareal Restaurante logo" loading="lazy" />
-    <nav>
-      <button id="btnTapas">Carta de tapas</button>
-      <button id="btnPlatos">Carta de platos</button>
-    </nav>
-  </header>
 
-  <div id="viewer">
-    <div id="placeholder">Selecciona una carta para verla</div>
-  </div>
+  <!-- Pantalla inicio -->
+  <section id="home">
+    <a id="btnHomeTapas"  class="full-btn" href="#">Carta de tapas</a>
+    <a id="btnHomePlatos" class="full-btn" href="#">Carta de platos</a>
+  </section>
+
+  <!-- Navegación y visor -->
+  <nav id="navbar">
+    <button id="btnNavTapas">Carta de tapas</button>
+    <button id="btnNavPlatos">Carta de platos</button>
+  </nav>
+  <section id="viewer-wrap">
+    <iframe id="pdfViewer" loading="lazy" allow="fullscreen"></iframe>
+  </section>
 
   <script>
-    // versión del build para forzar recarga cuando subas cambios
-    const BUILD_VERSION = '2024-07-23-2';
-    if(localStorage.getItem('mareal_ver')!==BUILD_VERSION){
-      localStorage.setItem('mareal_ver', BUILD_VERSION);
-      // fuerza recarga sin caché la primera vez que detecta versión nueva
-      if('performance' in window && performance.getEntriesByType('navigation')[0].type!=='reload'){
-        window.location.reload(true);
-      }
+    const TAPAS_PDF  = 'tapas.pdf';
+    const PLATOS_PDF = 'platos.pdf';
+
+    // Elementos
+    const home        = document.getElementById('home');
+    const btnHomeTapas  = document.getElementById('btnHomeTapas');
+    const btnHomePlatos = document.getElementById('btnHomePlatos');
+
+    const navbar      = document.getElementById('navbar');
+    const btnNavTapas  = document.getElementById('btnNavTapas');
+    const btnNavPlatos = document.getElementById('btnNavPlatos');
+
+    const viewerWrap  = document.getElementById('viewer-wrap');
+    const iframe      = document.getElementById('pdfViewer');
+
+    function showViewer(pdf){
+      // cambia fuente iframe
+      iframe.src = pdf + '#zoom=auto'; // Safari/Chrome mostrará todas las páginas; el usuario puede hacer scroll
+
+      // Cambia UI
+      home.style.display = 'none';
+      navbar.style.display = 'flex';
+      viewerWrap.style.display = 'block';
+
+      // Estado activo
+      const isTapas = pdf === TAPAS_PDF;
+      btnNavTapas.classList.toggle('active', isTapas);
+      btnNavPlatos.classList.toggle('active', !isTapas);
     }
 
-    const viewer=document.getElementById('viewer');
-    const placeholder=document.getElementById('placeholder');
-    const tapasBtn=document.getElementById('btnTapas');
-    const platosBtn=document.getElementById('btnPlatos');
+    // Evento pantalla inicial
+    btnHomeTapas .addEventListener('click', e=>{e.preventDefault(); showViewer(TAPAS_PDF );});
+    btnHomePlatos.addEventListener('click', e=>{e.preventDefault(); showViewer(PLATOS_PDF);});
 
-    function showPdf(file,btn){
-      const current=viewer.querySelector('embed');
-      if(current&&current.dataset.src===file)return;
-      current?.remove();
-      placeholder.style.display='none';
-      [tapasBtn,platosBtn].forEach(b=>b.classList.toggle('active',b===btn));
-      const embed=document.createElement('embed');
-      embed.dataset.src=file;
-      embed.src=`${file}?v=2#view=FitH`;
-      embed.type='application/pdf';
-      viewer.appendChild(embed);
-    }
-    tapasBtn.addEventListener('click',()=>showPdf('tapas.pdf',tapasBtn));
-    platosBtn.addEventListener('click',()=>showPdf('platos.pdf',platosBtn));
+    // Evento navbar
+    btnNavTapas .addEventListener('click', ()=> showViewer(TAPAS_PDF));
+    btnNavPlatos.addEventListener('click', ()=> showViewer(PLATOS_PDF));
+
+    // Abrir primera vez según hash (?menu=tapas)
+    const params = new URLSearchParams(window.location.search);
+    const menu = params.get('menu');
+    if(menu==='tapas')  showViewer(TAPAS_PDF);
+    if(menu==='platos') showViewer(PLATOS_PDF);
   </script>
 </body>
 </html>
