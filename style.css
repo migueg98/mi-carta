@@ -1,4 +1,6 @@
-/* Colores de marca */
+/* Google Fonts --------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@600;700&display=swap');
+
 :root{
   --bg:#7fccc7;
   --txt:#0d5e86;
@@ -7,45 +9,63 @@
 }
 
 html,body{
-  margin:0;font-family:"Segoe UI",Roboto,sans-serif;
-  background:var(--bg);color:var(--txt);
+  margin:0; font-family:'Lato',sans-serif;
+  background:var(--bg); color:var(--txt);
 }
 
-/* Encabezado */
-header{
-  text-align:center;padding:2rem 1rem;
+/* ---------- Header ---------- */
+header{text-align:center;padding:1.8rem 1rem}
+header img{max-width:180px}
+
+/* ---------- Layout ---------- */
+main{
+  max-width:900px; margin:auto; padding:0 1rem 4rem;
 }
-header img{max-width:160px}
 
-main{padding:0 1rem 4rem;max-width:800px;margin:auto}
-
-/* Secciones */
+/* ---------- Secciones ---------- */
 h2{
-  margin:2.5rem 0 1rem;font-size:1.4rem;border-bottom:2px solid var(--txt);
-  padding-bottom:.3rem;
+  font-family:'Playfair Display',serif;
+  font-size:2rem; font-weight:600; text-align:center;
+  margin:3rem 0 1.2rem; color:var(--txt);
+  position:relative;
 }
+h2::after{content:'';display:block;width:70px;height:3px;
+  background:var(--accent);margin:10px auto 0;border-radius:6px}
 
-/* Fila plato-precio */
+/* ---------- Plato ---------- */
 .item{
-  display:flex;align-items:flex-start;gap:.8rem;
-  background:var(--card);border-radius:8px;padding:1rem;margin-bottom:.8rem;
+  display:flex;align-items:center;gap:1rem;
+  background:var(--card);padding:1rem 1.4rem;margin:.9rem 0;
+  border-radius:12px;box-shadow:0 4px 8px rgb(0 0 0 / 8%);
 }
 .item img{
-  width:80px;height:80px;object-fit:cover;border-radius:6px
+  width:100px;height:100px;object-fit:cover;border-radius:10px;
 }
-.texto{flex:1}
-.texto h3{font-size:1.05rem;margin:0 0 .15rem;font-weight:600}
-.texto .en{font-size:.85rem;color:#144b71}
+
+/* texto + líder de puntos */
+.texto{flex:1;position:relative;padding-right:1rem}
+.texto h3{
+  font-size:1.1rem;font-weight:700;margin:0;
+  line-height:1.3rem;font-family:'Playfair Display',serif;
+}
+.texto .en{
+  font-size:.86rem;color:#154c6e;font-weight:400;margin-top:2px
+}
+
+/* línea de puntos automática */
+.texto::after{
+  content:'';position:absolute;left:0;right:0;bottom:6px;
+  border-bottom:1px dotted rgba(13,94,134,.35);z-index:-1;
+}
+
+/* precio sobre la línea */
 .precio{
-  font-weight:700;white-space:nowrap;
-  margin-left:.8rem;align-self:center;
+  font-weight:700;white-space:nowrap;margin-left:.6rem;
+  background:var(--card);padding-left:.4rem;margin-bottom:-2px
 }
 
-/* Footer */
-footer{padding:2rem 1rem;text-align:center;font-size:.8rem;color:#12425f}
-
-/* Responsive grande: foto izquierda, texto+precio derecha */
+/* ---------- Responsive ---------- */
 @media(min-width:680px){
-  .item{gap:1rem}
-  .item img{width:100px;height:100px}
+  .item img{width:120px;height:120px}
+  .texto h3{font-size:1.2rem}
 }
