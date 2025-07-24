@@ -1,0 +1,51 @@
+/* Colores de marca */
+:root{
+  --bg:#7fccc7;
+  --txt:#0d5e86;
+  --accent:#ff725e;
+  --card:#ffffff;
+}
+
+html,body{
+  margin:0;font-family:"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--txt);
+}
+
+/* Encabezado */
+header{
+  text-align:center;padding:2rem 1rem;
+}
+header img{max-width:160px}
+
+main{padding:0 1rem 4rem;max-width:800px;margin:auto}
+
+/* Secciones */
+h2{
+  margin:2.5rem 0 1rem;font-size:1.4rem;border-bottom:2px solid var(--txt);
+  padding-bottom:.3rem;
+}
+
+/* Fila plato-precio */
+.item{
+  display:flex;align-items:flex-start;gap:.8rem;
+  background:var(--card);border-radius:8px;padding:1rem;margin-bottom:.8rem;
+}
+.item img{
+  width:80px;height:80px;object-fit:cover;border-radius:6px
+}
+.texto{flex:1}
+.texto h3{font-size:1.05rem;margin:0 0 .15rem;font-weight:600}
+.texto .en{font-size:.85rem;color:#144b71}
+.precio{
+  font-weight:700;white-space:nowrap;
+  margin-left:.8rem;align-self:center;
+}
+
+/* Footer */
+footer{padding:2rem 1rem;text-align:center;font-size:.8rem;color:#12425f}
+
+/* Responsive grande: foto izquierda, texto+precio derecha */
+@media(min-width:680px){
+  .item{gap:1rem}
+  .item img{width:100px;height:100px}
+}

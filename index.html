@@ -3,90 +3,139 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Mareal · Cartas</title>
-
-<style>
-:root{ --bg:#7fccc7; --txt:#0d5e86; --accent:#ff725e }
-/* Reset básico */
-*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--txt);overflow:hidden}
-
-/* -------- Portada -------- */
-#welcome{
-  position:fixed;inset:0;height:100svh;                       /* ocupa toda la pantalla */
-  padding:env(safe-area-inset-top) 6vw env(safe-area-inset-bottom);
-  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7vh}
-#welcome img{width:64%;max-width:250px}
-.big-btn{
-  display:inline-block;text-align:center;text-decoration:none;
-  width:100%;max-width:460px;padding:1.3rem;border-radius:26px;
-  font-size:1.35rem;font-weight:700;background:#fff;color:var(--txt)}
-@media(min-width:680px){#welcome{flex-direction:row;gap:4vw}.big-btn{max-width:none}}
-
-/* -------- Visor -------- */
-#viewer{position:fixed;inset:0;display:none;flex-direction:column;height:100svh}
-#bar{
-  display:flex;gap:.8rem;justify-content:center;align-items:center;
-  padding:.7rem env(safe-area-inset-left) .7rem env(safe-area-inset-right);
-  background:linear-gradient(90deg,var(--txt),#009fb0)}
-.bar-btn{
-  flex:1 1 150px;padding:.6rem;border-radius:999px;
-  font-weight:600;font-size:1rem;text-align:center;text-decoration:none;
-  background:#fff;color:var(--txt)}
-.bar-btn.active{background:var(--accent);color:#fff}
-
-/* Contenedor que evita cualquier desplazamiento lateral */
-#wrap{flex:1;overflow:hidden}
-embed{display:block;border:0;width:100%;height:100%;max-width:100%}
-</style>
+<title>Carta · Restaurante Mareal</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- Portada -->
-<section id="welcome">
-  <img src="logo.png" alt="Logotipo Mareal">
-  <a class="big-btn" href="?menu=tapas"  data-menu="tapas">Carta de tapas</a>
-  <a class="big-btn" href="?menu=platos" data-menu="platos">Carta de platos</a>
+<header>
+  <img src="img/logo.png" alt="Logo Mareal">
+</header>
+
+<main>
+
+<!---------------- ENTRANTES ---------------->
+<section>
+  <h2>Entrantes</h2>
+
+  <article class="item">
+    <div class="texto">
+      <h3>Jamón bellota 100 × 100</h3>
+      <p class="en">100 % Bellota ham</p>
+    </div>
+    <span class="precio">14,00 €</span>
+  </article>
+
+  <article class="item">
+    <div class="texto">
+      <h3>Queso viejo</h3>
+      <p class="en">Aged cheese</p>
+    </div>
+    <span class="precio">14,00 €</span>
+  </article>
+
+  <!-- …añade más platos siguiendo el mismo bloque… -->
 </section>
 
-<!-- Visor -->
-<section id="viewer">
-  <nav id="bar">
-    <a class="bar-btn" href="?menu=tapas"  data-menu="tapas">Carta de tapas</a>
-    <a class="bar-btn" href="?menu=platos" data-menu="platos">Carta de platos</a>
-  </nav>
-  <div id="wrap"></div> <!-- aquí se inyecta el <embed> -->
+<!---------------- ENSALADAS --------------->
+<section>
+  <h2>Ensaladas</h2>
+
+  <article class="item">
+    <div class="texto">
+      <h3>Ensalada de la casa</h3>
+      <p class="en">House salad</p>
+    </div>
+    <span class="precio">10,00 €</span>
+  </article>
+
+  <article class="item">
+    <div class="texto">
+      <h3>Ensalada de rulo de cabra</h3>
+      <p class="en">Goat‑cheese salad</p>
+    </div>
+    <span class="precio">13,00 €</span>
+  </article>
 </section>
 
-<script>
-/* Rutas de los PDFs (ya están en la raíz del repo) */
-const FILE={tapas:'tapas.pdf', platos:'platos.pdf'};
+<!---------------- GUISOS Y ARROCES -------->
+<section>
+  <h2>Guisos & Arroces</h2>
 
-const hero =document.getElementById('welcome');
-const visor=document.getElementById('viewer');
-const wrap =document.getElementById('wrap');
-const bar  =[...document.querySelectorAll('.bar-btn')];
+  <article class="item">
+    <div class="texto">
+      <h3>Garbanzos con langostinos</h3>
+      <p class="en">Chickpeas with prawns</p>
+    </div>
+    <span class="precio">14,00 €</span>
+  </article>
 
-/* Carga el PDF ajustado al ancho */
-function load(menu){
-  wrap.innerHTML=`<embed src="${FILE[menu]}#view=FitH" type="application/pdf">`;
-  bar.forEach(b=>b.classList.toggle('active',b.dataset.menu===menu));
-  hero.style.display='none';
-  visor.style.display='flex';
-  history.replaceState(null,'',`?menu=${menu}`);
-}
+  <!-- … resto de guisos … -->
+</section>
 
-/* Intercepta enlaces (SPA); sin JS el link sigue funcionando */
-document.addEventListener('click',e=>{
-  const link=e.target.closest('a[data-menu]');
-  if(!link) return;
-  e.preventDefault();
-  load(link.dataset.menu);
-},{passive:false});
+<!---------------- FRITURAS ---------------->
+<section>
+  <h2>Frituras</h2>
 
-/* Abre directamente si la URL ya viene con ?menu= */
-const inicial=new URLSearchParams(location.search).get('menu');
-if(FILE[inicial]) load(inicial);
-</script>
+  <article class="item">
+    <div class="texto">
+      <h3>Croquetas de gambas al ajillo (½ doc.)</h3>
+      <p class="en">Garlic shrimp croquettes</p>
+    </div>
+    <span class="precio">7,00 €</span>
+  </article>
+
+  <!-- … -->
+</section>
+
+<!---------------- REVUELTOS --------------->
+<section>
+  <h2>Revueltos</h2>
+
+  <article class="item">
+    <div class="texto">
+      <h3>Revuelto de habas con jamón</h3>
+      <p class="en">Scrambled broad beans & ham</p>
+    </div>
+    <span class="precio">11,50 €</span>
+  </article>
+</section>
+
+<!---------------- CARNE ------------------->
+<section>
+  <h2>Carnes</h2>
+
+  <article class="item">
+    <div class="texto">
+      <h3>Presa ibérica</h3>
+      <p class="en">Iberian pork shoulder</p>
+    </div>
+    <span class="precio">16,00 €</span>
+  </article>
+
+  <!-- … -->
+</section>
+
+<!---------------- PESCADO ----------------->
+<section>
+  <h2>Pescados</h2>
+
+  <article class="item">
+    <div class="texto">
+      <h3>Choco frito (½ ración)</h3>
+      <p class="en">Fried cuttlefish</p>
+    </div>
+    <span class="precio">10,00 €</span>
+  </article>
+
+  <!-- … -->
+</section>
+
+</main>
+
+<footer>
+  <small>Carta sujeta a cambios · IVA incluido</small>
+</footer>
+
 </body>
 </html>
