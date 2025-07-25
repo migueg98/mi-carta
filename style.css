@@ -1,71 +1,125 @@
-/* Google Fonts --------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@600;700&display=swap');
+/* Google Fonts ---------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500&display=swap');
 
+/* Paleta y fuentes ----------------------------------------------- */
 :root{
-  --bg:#7fccc7;
-  --txt:#0d5e86;
-  --accent:#ff725e;
-  --card:#ffffff;
+  --bg:#ffffff;         /* fondo */
+  --txt:#000000;        /* texto principal negro */
+  --sub:#6e7c8c;        /* traducción (gris)   */
+  --accent:#c09a5b;     /* trazo dorado fino   */
 }
 
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  margin:0; font-family:'Lato',sans-serif;
-  background:var(--bg); color:var(--txt);
+  height:100%;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Inter',sans-serif;
+  line-height:1.45;
+  overflow-x:hidden;
 }
 
-/* ---------- Header ---------- */
-header{text-align:center;padding:1.8rem 1rem}
-header img{max-width:180px}
+/* ------------- ENCABEZADO ------------- */
+header{
+  text-align:center;
+  padding:24px 16px 12px;      /* menos espacio arriba */
+}
+header img{
+  width:80%;
+  max-width:350px;
+  height:auto;
+}
 
-/* ---------- Layout ---------- */
+/* ------------- CONTENIDO -------------- */
 main{
-  max-width:900px; margin:auto; padding:0 1rem 4rem;
+  max-width:900px;
+  margin:auto;
+  padding:0 16px 80px;
 }
 
-/* ---------- Secciones ---------- */
+/* ------------- SECCIÓN --------------- */
 h2{
-  font-family:'Playfair Display',serif;
-  font-size:2rem; font-weight:600; text-align:center;
-  margin:3rem 0 1.2rem; color:var(--txt);
+  font-family:'Libre Baskerville',serif;
+  font-size:2rem;
+  font-weight:700;
+  text-align:center;
+  margin:40px 0 24px;          /* margen superior reducido */
   position:relative;
 }
-h2::after{content:'';display:block;width:70px;height:3px;
-  background:var(--accent);margin:10px auto 0;border-radius:6px}
+h2::after{
+  content:'';
+  display:block;
+  width:80px;
+  height:2px;
+  background:var(--accent);
+  margin:12px auto 0;
+  border-radius:6px;
+}
 
-/* ---------- Plato ---------- */
+/* ------------- FOTO DE CATEGORÍA ----- */
+.cat-photo{
+  display:block;
+  width:100%;           /* ocupa todo el ancho del contenedor */
+  max-width:900px;      /* coincide con main */
+  margin:40px auto 16px;
+  border-radius:12px;
+  object-fit:cover;     /* recorta de forma elegante */
+}
+/* elimina margen si un h2 sigue inmediatamente a la foto */
+.cat-photo + h2{margin-top:0}
+
+/* ------------- PLATO ----------------- */
 .item{
-  display:flex;align-items:center;gap:1rem;
-  background:var(--card);padding:1rem 1.4rem;margin:.9rem 0;
-  border-radius:12px;box-shadow:0 4px 8px rgb(0 0 0 / 8%);
+  display:flex;
+  align-items:flex-start;
+  gap:1rem;
+  margin:12px 0;
 }
-.item img{
-  width:100px;height:100px;object-fit:cover;border-radius:10px;
-}
-
-/* texto + líder de puntos */
-.texto{flex:1;position:relative;padding-right:1rem}
-.texto h3{
-  font-size:1.1rem;font-weight:700;margin:0;
-  line-height:1.3rem;font-family:'Playfair Display',serif;
-}
-.texto .en{
-  font-size:.86rem;color:#154c6e;font-weight:400;margin-top:2px
+.item img{                               /* foto opcional del plato */
+  width:110px;
+  height:110px;
+  object-fit:cover;
+  border-radius:8px;
 }
 
-/* línea de puntos automática */
-.texto::after{
-  content:'';position:absolute;left:0;right:0;bottom:6px;
-  border-bottom:1px dotted rgba(13,94,134,.35);z-index:-1;
+.item .info{
+  flex:1;
+  position:relative;
+  padding-right:12px;
+}
+.item h3{
+  font-family:'Libre Baskerville',serif;
+  font-size:1.1rem;
+  font-weight:700;
+}
+.item .en{
+  color:var(--sub);
+  font-size:.86rem;
 }
 
-/* precio sobre la línea */
-.precio{
-  font-weight:700;white-space:nowrap;margin-left:.6rem;
-  background:var(--card);padding-left:.4rem;margin-bottom:-2px
+/* línea de puntos automática entre nombre y precio */
+.item .info::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:4px;
+  border-bottom:1px dotted rgba(0,0,0,.35);
+  z-index:-1;
 }
 
-/* ---------- Responsive ---------- */
+/* precio alineado a la derecha, misma línea */
+.item .price{
+  white-space:nowrap;
+  font-weight:500;
+  font-size:1rem;
+  margin-left:12px;
+}
+
+/* ---------- RESPONSIVE > 680 px ------- */
 @media(min-width:680px){
-  .item img{width:120px;height:120px}
-  .texto h3{font-size:1.2rem}
+  .item{gap:1.4rem}
+  .item img{
+    width:140px;
+    height:140px;
+  }
+  .item h3{font-size:1.2rem}
 }
