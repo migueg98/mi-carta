@@ -1,133 +1,73 @@
 /* Google Fonts ---------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500&display=swap');
 
-/* Paleta y fuentes ----------------------------------------------- */
+/* Paleta ---------------------------------------------------------- */
 :root{
-  --bg:#ffffff;         /* fondo */
-  --txt:#000000;        /* texto principal negro */
-  --sub:#6e7c8c;        /* traducción (gris)   */
-  --accent:#c09a5b;     /* trazo dorado sutil */
+  --bg:#fff;
+  --txt:#000;
+  --sub:#6e7c8c;
+  --accent:#c09a5b;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  height:100%;
-  background:var(--bg);
-  color:var(--txt);
-  font-family:'Inter',sans-serif;
-  line-height:1.45;
-  overflow-x:hidden;
+  height:100%;background:var(--bg);color:var(--txt);
+  font-family:'Inter',sans-serif;line-height:1.45;overflow-x:hidden;
 }
 
-/* ------------- ENCABEZADO ------------- */
-header{
-  text-align:center;
-  padding:24px 16px 12px;            /* menos espacio arriba */
-}
-header img{
-  width:80%;
-  max-width:350px;
-  height:auto;
-}
+/* ---------- ENCABEZADO ---------- */
+header{text-align:center;padding:24px 16px 12px}
+header img{width:80%;max-width:350px;height:auto}
 
-/* ------------- CONTENIDO -------------- */
-main{
-  max-width:900px;
-  margin:auto;
-  padding:0 16px 80px;               /* 16 px de padding lateral */
-}
+/* ---------- CONTENIDO ---------- */
+main{max-width:900px;margin:auto;padding:0 16px 80px}
 
-/* ------------- SECCIONES -------------- */
+/* ---------- SECCIONES ---------- */
 h2{
-  font-family:'Libre Baskerville',serif;
-  font-size:2rem;
-  font-weight:700;
-  text-align:center;
-  margin:40px 0 24px;                /* margen sup. reducido */
-  position:relative;
-}
+  font-family:'Libre Baskerville',serif;font-size:2rem;font-weight:700;
+  text-align:center;margin:40px 0 24px;position:relative}
 h2::after{
-  content:'';
-  display:block;
-  width:80px;
-  height:2px;
-  background:var(--accent);
-  margin:12px auto 0;
-  border-radius:6px;
-}
+  content:'';display:block;width:80px;height:2px;background:var(--accent);
+  margin:12px auto 0;border-radius:6px}
 
-/* ------------- FOTO DE CATEGORÍA ------ */
-/* — móvil: ancho completo sin márgenes — */
+/* ---------- FOTO DE CATEGORÍA ------ */
 .cat-photo{
-  width:calc(100% + 32px);           /* compensa padding 16+16 */
-  margin:24px -16px 12px;            /* 0 margen lateral visual */
-  height:180px;                      /* alto fijo agradable */
+  display:block;
+  /* ocupa todo el ancho visual del móvil sin margen */
+  width:calc(100% + 32px);        /* 32 px compensa padding lateral (16+16) */
+  margin:24px -16px 12px;         /* arrastra 16 px hacia fuera a cada lado */
+  height:140px;                   /* más baja para no tapar pantalla */
   object-fit:cover;
-  border-radius:0;                   /* bordes rectos para look minimal */
+  border-radius:0;
 }
-/* — escritorio: centrada y con esquinas — */
+/* Escritorio: centrada y con esquinas */
 @media(min-width:680px){
   .cat-photo{
-    width:100%;                      /* ya no compensa padding */
-    max-width:900px;
+    width:100%;max-width:900px;
     margin:40px auto 16px;
     height:260px;
     border-radius:12px;
   }
 }
 
-/* ------------- PLATO ------------------ */
+/* ---------- PLATO ------------------ */
 .item{
-  display:flex;
-  align-items:flex-start;
-  gap:1rem;
-  margin:12px 0;
-}
-.item img{                             /* foto opcional del plato */
-  width:110px;
-  height:110px;
-  object-fit:cover;
-  border-radius:8px;
-}
-
-.item .info{
-  flex:1;
-  position:relative;
-  padding-right:12px;
-}
+  display:flex;align-items:flex-start;gap:1rem;margin:12px 0}
+.item img{
+  width:110px;height:110px;object-fit:cover;border-radius:8px}
+.item .info{flex:1;position:relative;padding-right:12px}
 .item h3{
-  font-family:'Libre Baskerville',serif;
-  font-size:1.1rem;
-  font-weight:700;
-}
-.item .en{
-  color:var(--sub);
-  font-size:.86rem;
-}
-
-/* línea de puntos entre nombre y precio */
+  font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700}
+.item .en{color:var(--sub);font-size:.86rem}
 .item .info::after{
-  content:'';
-  position:absolute;
-  left:0; right:0; bottom:4px;
-  border-bottom:1px dotted rgba(0,0,0,.35);
-  z-index:-1;
-}
-
-/* precio alineado derecha, misma línea */
+  content:'';position:absolute;left:0;right:0;bottom:4px;
+  border-bottom:1px dotted rgba(0,0,0,.35);z-index:-1}
 .item .price{
-  white-space:nowrap;
-  font-weight:500;
-  font-size:1rem;
-  margin-left:12px;
-}
+  white-space:nowrap;font-weight:500;font-size:1rem;margin-left:12px}
 
-/* ---------- RESPONSIVE > 680 px ------- */
+/* ---------- RESPONSIVE (>680 px) ---- */
 @media(min-width:680px){
   .item{gap:1.4rem}
-  .item img{
-    width:140px;
-    height:140px;
-  }
+  .item img{width:140px;height:140px}
   .item h3{font-size:1.2rem}
 }
