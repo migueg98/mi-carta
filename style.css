@@ -11,12 +11,8 @@
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  height:100%;
-  background:var(--bg);
-  color:var(--txt);
-  font-family:'Inter',sans-serif;
-  line-height:1.45;
-  overflow-x:hidden;
+  height:100%;background:var(--bg);color:var(--txt);
+  font-family:'Inter',sans-serif;line-height:1.45;overflow-x:hidden;
 }
 
 /* ---------- ENCABEZADO ---------- */
@@ -28,46 +24,40 @@ main{max-width:900px;margin:auto;padding:0 16px 80px}
 
 /* ---------- TÍTULOS ------------- */
 h2{
-  font-family:'Libre Baskerville',serif;
-  font-size:2rem;font-weight:700;text-align:center;
+  font-family:'Libre Baskerville',serif;font-size:2rem;font-weight:700;text-align:center;
   margin:40px 0 24px;position:relative}
 h2::after{content:'';display:block;width:80px;height:2px;background:var(--accent);
   margin:12px auto 0;border-radius:6px}
 
-/* ---------- FOTO DE CATEGORÍA ----- */
-/* móvil y tablet: ocupa 100 % del ancho visible de la pantalla */
-.cat-photo{
-  display:block;
-  width:calc(100% + 32px);   /* +32 px para compensar el padding de <main> */
-  max-width:none;
-  height:auto;               /* altura proporcional, NO se recorta */
-  margin:24px -16px 12px;    /* arrastra 16 px hacia fuera a cada lado */
-  border-radius:0;
-}
-
-/* escritorio: centrada dentro de la carta, bordes redondeados */
+/* ---------- FOTO CATEGORÍA ------ */
+.cat-photo{display:block;width:100%;height:auto;margin:24px 0 12px;border-radius:0}
 @media(min-width:680px){
-  .cat-photo{
-    width:100%;
-    max-width:900px;
-    margin:40px auto 16px;
-    height:auto;             /* sigue proporcional */
-    border-radius:12px;
-  }
+  .cat-photo{max-width:900px;margin:40px auto 16px;border-radius:12px}
 }
 
-/* ---------- PLATO ---------------- */
-.item{
-  display:flex;align-items:flex-start;gap:1rem;margin:12px 0}
+/* ---------- PLATOS -------------- */
+.item{display:flex;align-items:flex-start;gap:1rem;margin:12px 0}
 .item img{width:110px;height:110px;object-fit:cover;border-radius:8px}
 .item .info{flex:1;position:relative;padding-right:12px}
-.item h3{font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700}
-.item .en{color:var(--sub);font-size:.86rem}
+
+/* nombre + traducción en la misma línea */
+.item h3{
+  font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700;display:inline
+}
+.item h3 .en{
+  font-family:'Inter',sans-serif;font-weight:400;font-size:.9rem;
+  color:var(--sub);opacity:.85;margin-left:.4rem
+}
+
+/* descripción debajo */
+.desc{display:block;font-size:.82rem;color:var(--sub);margin-top:2px}
+
+/* puntos entre nombre y precio */
 .item .info::after{content:'';position:absolute;left:0;right:0;bottom:4px;
   border-bottom:1px dotted rgba(0,0,0,.35);z-index:-1}
+
 .item .price{white-space:nowrap;font-weight:500;font-size:1rem;margin-left:12px}
 
-/* ---------- RESPONSIVE (>680 px) ---- */
 @media(min-width:680px){
   .item{gap:1.4rem}
   .item img{width:140px;height:140px}
