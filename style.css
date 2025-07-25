@@ -26,31 +26,22 @@ h2{
 h2::after{content:'';display:block;width:80px;height:2px;background:var(--accent);
   margin:12px auto 0;border-radius:6px}
 
-/* Foto de categoría: móvil sin márgenes, escritorio centrada */
+/* ---------- FOTO DE CATEGORÍA ---------- */
 .cat-photo{
-  display:block;width:100vw;max-width:none;height:140px;object-fit:cover;
-  margin:24px 0 12px;border-radius:0;          /* 0 bordes, 0 márgenes laterales */
-  position:relative;left:50%;transform:translateX(-50%);
+  display:block;
+  width:100vw;            /* ocupa todo el ancho visible */
+  height:auto;            /* alto proporcional, sin recorte */
+  max-width:none;
+  margin:24px 0 12px;     /* sin márgenes laterales (ya es 100vw) */
+  border-radius:0;
 }
+/* escritorio: centrada dentro de main */
 @media(min-width:680px){
   .cat-photo{
-    width:100%;max-width:900px;height:260px;border-radius:12px;
-    margin:40px auto 16px;left:0;transform:none;
+    width:100%;           /* ancho de la carta (máx. 900 px) */
+    max-width:900px;
+    height:auto;          /* sigue proporcional */
+    margin:40px auto 16px;
+    border-radius:12px;
   }
-}
-
-/* Plato */
-.item{display:flex;align-items:flex-start;gap:1rem;margin:12px 0}
-.item img{width:110px;height:110px;object-fit:cover;border-radius:8px}
-.item .info{flex:1;position:relative;padding-right:12px}
-.item h3{font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700}
-.item .en{color:var(--sub);font-size:.86rem}
-.item .info::after{content:'';position:absolute;left:0;right:0;bottom:4px;
-  border-bottom:1px dotted rgba(0,0,0,.35);z-index:-1}
-.item .price{white-space:nowrap;font-weight:500;font-size:1rem;margin-left:12px}
-
-@media(min-width:680px){
-  .item{gap:1.4rem}
-  .item img{width:140px;height:140px}
-  .item h3{font-size:1.2rem}
 }
