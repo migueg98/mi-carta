@@ -6,7 +6,7 @@
   --bg:#ffffff;         /* fondo */
   --txt:#000000;        /* texto principal negro */
   --sub:#6e7c8c;        /* traducción (gris)   */
-  --accent:#c09a5b;     /* trazo dorado fino   */
+  --accent:#c09a5b;     /* trazo dorado sutil */
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -22,7 +22,7 @@ html,body{
 /* ------------- ENCABEZADO ------------- */
 header{
   text-align:center;
-  padding:24px 16px 12px;      /* menos espacio arriba */
+  padding:24px 16px 12px;            /* menos espacio arriba */
 }
 header img{
   width:80%;
@@ -34,16 +34,16 @@ header img{
 main{
   max-width:900px;
   margin:auto;
-  padding:0 16px 80px;
+  padding:0 16px 80px;               /* 16 px de padding lateral */
 }
 
-/* ------------- SECCIÓN --------------- */
+/* ------------- SECCIONES -------------- */
 h2{
   font-family:'Libre Baskerville',serif;
   font-size:2rem;
   font-weight:700;
   text-align:center;
-  margin:40px 0 24px;          /* margen superior reducido */
+  margin:40px 0 24px;                /* margen sup. reducido */
   position:relative;
 }
 h2::after{
@@ -56,26 +56,34 @@ h2::after{
   border-radius:6px;
 }
 
-/* ------------- FOTO DE CATEGORÍA ----- */
+/* ------------- FOTO DE CATEGORÍA ------ */
+/* — móvil: ancho completo sin márgenes — */
 .cat-photo{
-  display:block;
-  width:100%;           /* ocupa todo el ancho del contenedor */
-  max-width:900px;      /* coincide con main */
-  margin:40px auto 16px;
-  border-radius:12px;
-  object-fit:cover;     /* recorta de forma elegante */
+  width:calc(100% + 32px);           /* compensa padding 16+16 */
+  margin:24px -16px 12px;            /* 0 margen lateral visual */
+  height:180px;                      /* alto fijo agradable */
+  object-fit:cover;
+  border-radius:0;                   /* bordes rectos para look minimal */
 }
-/* elimina margen si un h2 sigue inmediatamente a la foto */
-.cat-photo + h2{margin-top:0}
+/* — escritorio: centrada y con esquinas — */
+@media(min-width:680px){
+  .cat-photo{
+    width:100%;                      /* ya no compensa padding */
+    max-width:900px;
+    margin:40px auto 16px;
+    height:260px;
+    border-radius:12px;
+  }
+}
 
-/* ------------- PLATO ----------------- */
+/* ------------- PLATO ------------------ */
 .item{
   display:flex;
   align-items:flex-start;
   gap:1rem;
   margin:12px 0;
 }
-.item img{                               /* foto opcional del plato */
+.item img{                             /* foto opcional del plato */
   width:110px;
   height:110px;
   object-fit:cover;
@@ -97,7 +105,7 @@ h2::after{
   font-size:.86rem;
 }
 
-/* línea de puntos automática entre nombre y precio */
+/* línea de puntos entre nombre y precio */
 .item .info::after{
   content:'';
   position:absolute;
@@ -106,7 +114,7 @@ h2::after{
   z-index:-1;
 }
 
-/* precio alineado a la derecha, misma línea */
+/* precio alineado derecha, misma línea */
 .item .price{
   white-space:nowrap;
   font-weight:500;
