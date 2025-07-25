@@ -29,10 +29,26 @@ h2{
 h2::after{content:'';display:block;width:80px;height:2px;background:var(--accent);
   margin:12px auto 0;border-radius:6px}
 
-/* ---------- FOTO CATEGORÍA ------ */
-.cat-photo{display:block;width:100%;height:auto;margin:24px 0 12px;border-radius:0}
+/* ---------- FOTO DE CATEGORÍA (versión sin márgenes) ---------- */
+/* móvil / tablet: la imagen se “estira” 16 px por cada lado
+   para tapar el padding lateral de <main> y quedar a ras del borde */
+.cat-photo{
+  display:block;
+  width:calc(100% + 32px);   /* 100 % + 16 px × 2 */
+  max-width:none;
+  height:auto;
+  margin:24px -16px 12px;    /* 24 arriba, 12 abajo, -16  laterales */
+  border-radius:0;           /* bordes rectos */
+}
+
+/* escritorio (≥ 680 px): recupera la versión centrada y con padding */
 @media(min-width:680px){
-  .cat-photo{max-width:900px;margin:40px auto 16px;border-radius:12px}
+  .cat-photo{
+    width:100%;
+    max-width:900px;
+    margin:40px auto 16px;   /* centrada dentro de main */
+    border-radius:12px;
+  }
 }
 
 /* ---------- PLATOS -------------- */
