@@ -10,52 +10,47 @@
 
 <style>
 :root{
-  --bg:#ffffff;         /* fondo blanco puro */
-  --txt:#1b3552;        /* azul‑gris elegante */
-  --sub:#6e7c8c;        /* gris difuminado para inglés */
-  --accent:#c09a5b;     /* oro suave para separadores */
+  --bg:#ffffff;      /* fondo */
+  --txt:#000000;     /* texto negro elegante */
+  --sub:#6e7c8c;     /* gris para traducción */
+  --accent:#c09a5b;  /* línea dorada sutil */
 }
-
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--txt);
-  font-family:'Inter',sans-serif;line-height:1.45}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;line-height:1.45;overflow-x:hidden}
 
 /* ---------- Encabezado ---------- */
 header{text-align:center;padding:32px 16px}
-header img{max-width:180px}
+header img{width:80%;max-width:350px;height:auto}
 
 /* ---------- Contenido ---------- */
 main{max-width:900px;margin:auto;padding:0 16px 80px}
 
 /* ---------- Secciones ---------- */
 h2{
-  font-family:'Libre Baskerville',serif;font-weight:700;font-size:1.9rem;
-  text-align:center;margin:56px 0 24px;position:relative;color:var(--txt)}
+  font-family:'Libre Baskerville',serif;font-size:2rem;font-weight:700;text-align:center;
+  margin:56px 0 24px;position:relative}
 h2::after{
-  content:'';display:block;width:80px;height:2px;
-  background:var(--accent);margin:12px auto 0}
+  content:'';display:block;width:80px;height:2px;background:var(--accent);
+  margin:12px auto 0;border-radius:6px}
 
 /* ---------- Plato ---------- */
-.item{
-  display:flex;align-items:flex-start;gap:8px;margin:12px 0}
-.item .info{flex:1;display:flex;flex-direction:column}
-.item h3{
-  font-family:'Libre Baskerville',serif;font-size:1.15rem;font-weight:700}
+.item{display:flex;flex-direction:column;gap:1rem;margin:12px 0}
+.item .info{flex:1;display:flex;flex-direction:column;position:relative;padding-right:12px}
+.item h3{font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700}
 .item .en{color:var(--sub);font-size:.86rem}
-.item .price{
-  white-space:nowrap;margin-left:12px;font-weight:500;font-size:1rem}
+.item .price{white-space:nowrap;font-weight:500;font-size:1rem;margin-left:12px}
 
-/* Línea de puntos automática */
-.item .info{position:relative;padding-right:12px}
+/* puntos entre nombre y precio */
 .item .info::after{
-  content:'';border-bottom:1px dotted rgba(27,53,82,.35);
+  content:'';border-bottom:1px dotted rgba(0,0,0,.35);
   position:absolute;left:0;right:0;bottom:4px;z-index:-1}
 
-/* Fotos opcionales */
-.item img{
-  width:110px;height:110px;object-fit:cover;border-radius:8px}
+/* foto opcional */
+.item img{width:110px;height:110px;object-fit:cover;border-radius:8px}
 @media(min-width:680px){
+  .item{flex-direction:row;align-items:center;gap:1.4rem}
   .item img{width:140px;height:140px}
+  .item h3{font-size:1.2rem}
 }
 </style>
 </head>
@@ -67,49 +62,114 @@ h2::after{
 
 <main>
 
-<!-- TAPAS -->
-<h2>Tapas</h2>
-
-<article class="item">
-  <!-- <img src="img/tapas/calamares.jpg" alt="Calamares a la romana"> -->
-  <div class="info">
-    <h3>Calamares a la romana</h3>
-    <span class="en">Fried calamari</span>
-  </div>
-  <span class="price">9 €</span>
-</article>
-
+<!-- ENTRANTES -->
+<h2>Entrantes</h2>
 <article class="item">
   <div class="info">
-    <h3>Croquetas caseras</h3>
-    <span class="en">Iberian ham croquettes</span>
-  </div>
-  <span class="price">7 €</span>
+    <h3>Jamón bellota 100 × 100</h3>
+    <span class="en">100 % Iberian ham</span>
+  </div><span class="price">14 €</span>
 </article>
-
-<!-- PLATOS -->
-<h2>Platos</h2>
-
 <article class="item">
-  <img src="img/platos/lubina.jpg" alt="Lubina al horno">
   <div class="info">
-    <h3>Lubina al horno</h3>
-    <span class="en">Baked sea bass</span>
-  </div>
-  <span class="price">16 €</span>
+    <h3>Queso viejo</h3>
+    <span class="en">Aged cheese</span>
+  </div><span class="price">14 €</span>
 </article>
 
+<!-- ENSALADAS -->
+<h2>Ensaladas</h2>
+<article class="item">
+  <div class="info">
+    <h3>Ensalada de la casa</h3>
+    <span class="en">House salad</span>
+  </div><span class="price">10 €</span>
+</article>
+<article class="item">
+  <div class="info">
+    <h3>Ensalada de rulo de cabra</h3>
+    <span class="en">Goat‑cheese salad</span>
+  </div><span class="price">13 €</span>
+</article>
+
+<!-- GUISOS Y ARROCES -->
+<h2>Guisos y arroces</h2>
+<article class="item">
+  <div class="info">
+    <h3>Garbanzos con langostinos</h3>
+    <span class="en">Chickpeas with prawns</span>
+  </div><span class="price">14 €</span>
+</article>
+<article class="item">
+  <div class="info">
+    <h3>Arroz negro</h3>
+    <span class="en">Black rice</span>
+  </div><span class="price">15 €</span>
+</article>
+
+<!-- FRITURAS -->
+<h2>Frituras</h2>
+<article class="item">
+  <div class="info">
+    <h3>Croquetas de gambas al ajillo (½ doc.)</h3>
+    <span class="en">Garlic shrimp croquettes</span>
+  </div><span class="price">7 €</span>
+</article>
+<article class="item">
+  <div class="info">
+    <h3>Puntillitas</h3>
+    <span class="en">Fried baby squid</span>
+  </div><span class="price">11 €</span>
+</article>
+
+<!-- REVUELTOS -->
+<h2>Revueltos</h2>
+<article class="item">
+  <div class="info">
+    <h3>Revuelto de habas con jamón</h3>
+    <span class="en">Broad beans & ham scramble</span>
+  </div><span class="price">11,5 €</span>
+</article>
+<article class="item">
+  <div class="info">
+    <h3>Revuelto de trigueros</h3>
+    <span class="en">Asparagus scramble</span>
+  </div><span class="price">10,5 €</span>
+</article>
+
+<!-- CARNES -->
+<h2>Carnes</h2>
+<article class="item">
+  <div class="info">
+    <h3>Presa ibérica</h3>
+    <span class="en">Iberian pork shoulder</span>
+  </div><span class="price">16 €</span>
+</article>
 <article class="item">
   <div class="info">
     <h3>Entrecot de ternera (300 g)</h3>
     <span class="en">Beef entrecôte</span>
-  </div>
-  <span class="price">18 €</span>
+  </div><span class="price">18 €</span>
+</article>
+
+<!-- PESCADOS -->
+<h2>Pescados</h2>
+<article class="item">
+  <div class="info">
+    <h3>Lubina al horno</h3>
+    <span class="en">Baked sea bass</span>
+  </div><span class="price">16 €</span>
+</article>
+<article class="item">
+  <div class="info">
+    <h3>Choco frito (½ ración)</h3>
+    <span class="en">Fried cuttlefish</span>
+  </div><span class="price">10 €</span>
 </article>
 
 </main>
 
-<footer style="text-align:center;padding:40px 16px;font-size:.8rem;color:#4d6173">
+<footer style="text-align:center;padding:40px 16px;font-size:.8rem;color:#555">
   Carta sujeta a cambios · IVA incluido
 </footer>
 
