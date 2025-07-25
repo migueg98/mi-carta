@@ -11,8 +11,12 @@
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  height:100%;background:var(--bg);color:var(--txt);
-  font-family:'Inter',sans-serif;line-height:1.45;overflow-x:hidden;
+  height:100%;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Inter',sans-serif;
+  line-height:1.45;
+  overflow-x:hidden;
 }
 
 /* ---------- ENCABEZADO ---------- */
@@ -24,56 +28,97 @@ main{max-width:900px;margin:auto;padding:0 16px 80px}
 
 /* ---------- TÍTULOS ------------- */
 h2{
-  font-family:'Libre Baskerville',serif;font-size:2rem;font-weight:700;text-align:center;
-  margin:40px 0 24px;position:relative}
-h2::after{content:'';display:block;width:80px;height:2px;background:var(--accent);
-  margin:12px auto 0;border-radius:6px}
-
-/* ---------- FOTO DE CATEGORÍA (versión sin márgenes) ---------- */
-/* móvil / tablet: la imagen se “estira” 16 px por cada lado
-   para tapar el padding lateral de <main> y quedar a ras del borde */
-.cat-photo{
+  font-family:'Libre Baskerville',serif;
+  font-size:2rem;
+  font-weight:700;
+  text-align:center;
+  margin:40px 0 24px;
+  position:relative;
+}
+h2::after{
+  content:'';
   display:block;
-  width:calc(100% + 32px);   /* 100 % + 16 px × 2 */
-  max-width:none;
-  height:auto;
-  margin:24px -16px 12px;    /* 24 arriba, 12 abajo, -16  laterales */
-  border-radius:0;           /* bordes rectos */
+  width:80px;
+  height:2px;
+  background:var(--accent);
+  margin:12px auto 0;
+  border-radius:6px;
 }
 
-/* escritorio (≥ 680 px): recupera la versión centrada y con padding */
+/* ---------- FOTO DE CATEGORÍA ---- */
+/* móvil / tablet: sin márgenes laterales */
+.cat-photo{
+  display:block;
+  width:calc(100% + 32px);      /* cubre padding 16 px de <main> */
+  max-width:none;
+  height:auto;                  /* mantiene proporción */
+  margin:24px -16px 12px;       /* -16 px a cada lado */
+  border-radius:0;              /* bordes rectos en móvil */
+}
+/* escritorio (≥ 680 px): centrada dentro de la carta */
 @media(min-width:680px){
   .cat-photo{
     width:100%;
     max-width:900px;
-    margin:40px auto 16px;   /* centrada dentro de main */
+    margin:40px auto 16px;
     border-radius:12px;
   }
 }
 
 /* ---------- PLATOS -------------- */
-.item{display:flex;align-items:flex-start;gap:1rem;margin:12px 0}
+.item{
+  display:flex;
+  align-items:flex-start;
+  gap:1rem;
+  margin:12px 0;
+}
 .item img{width:110px;height:110px;object-fit:cover;border-radius:8px}
+
 .item .info{flex:1;position:relative;padding-right:12px}
 
-/* nombre + traducción en la misma línea */
+/* nombre + traducción */
 .item h3{
-  font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700;display:inline
+  font-family:'Libre Baskerville',serif;
+  font-size:1.1rem;
+  font-weight:700;
+  display:inline;
 }
 .item h3 .en{
-  font-family:'Inter',sans-serif;font-weight:400;font-size:.9rem;
-  color:var(--sub);opacity:.85;margin-left:.4rem
+  font-family:'Inter',sans-serif;
+  font-weight:400;
+  font-size:.9rem;
+  color:var(--sub);
+  opacity:.85;
+  margin-left:.4rem;
 }
 
-/* descripción debajo */
-.desc{display:block;font-size:.82rem;color:var(--sub);margin-top:2px}
+/* descripción */
+.desc{
+  display:block;
+  font-size:.82rem;
+  color:var(--sub);
+  margin-top:2px;
+}
 
 /* puntos entre nombre y precio */
-.item .info::after{content:'';position:absolute;left:0;right:0;bottom:4px;
-  border-bottom:1px dotted rgba(0,0,0,.35);z-index:-1}
+.item .info::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:4px;
+  border-bottom:1px dotted rgba(0,0,0,.35);
+  z-index:-1;
+}
 
-.item .price{white-space:nowrap;font-weight:500;font-size:1rem;margin-left:12px}
+.item .price{
+  white-space:nowrap;
+  font-weight:500;
+  font-size:1rem;
+  margin-left:12px;
+}
 
+/* ---------- RESPONSIVE (>680 px) ---- */
 @media(min-width:680px){
   .item{gap:1.4rem}
   .item img{width:140px;height:140px}
