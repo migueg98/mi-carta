@@ -5,59 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Carta · Mareal</title>
 
-<!-- Google Fonts -->
+<!-- Google Fonts (ya los usa el CSS externo) -->
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --bg:#ffffff;
-  --txt:#000;
-  --sub:#6e7c8c;
-  --accent:#c09a5b;
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;line-height:1.45;overflow-x:hidden}
-
-/* ---------- Encabezado ---------- */
-header{text-align:center;padding:24px 16px 12px}           /* ← antes 32px */
-header img{width:80%;max-width:350px;height:auto}
-
-/* ---------- Contenido ---------- */
-main{max-width:900px;margin:auto;padding:0 16px 80px}
-
-/* ---------- Secciones ---------- */
-h2{
-  font-family:'Libre Baskerville',serif;font-size:2rem;font-weight:700;text-align:center;
-  margin:40px 0 24px;                                       /* ← antes 56px arriba */
-  position:relative}
-h2::after{
-  content:'';display:block;width:80px;height:2px;background:var(--accent);
-  margin:12px auto 0;border-radius:6px}
-
-/* ---------- Plato ---------- */
-.item{
-  display:flex;align-items:flex-start;gap:1rem;             /* fila en móvil y desktop */
-  margin:12px 0}
-.item img{
-  width:110px;height:110px;object-fit:cover;border-radius:8px}
-.item .info{flex:1;position:relative;padding-right:12px}
-.item h3{
-  font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700}
-.item .en{color:var(--sub);font-size:.86rem}
-
-/* línea de puntos */
-.item .info::after{
-  content:'';position:absolute;left:0;right:0;bottom:4px;
-  border-bottom:1px dotted rgba(0,0,0,.35);z-index:-1}
-
-/* precio siempre en la misma línea */
-.item .price{white-space:nowrap;font-weight:500;font-size:1rem;margin-left:12px}
-
-@media(min-width:680px){
-  .item img{width:140px;height:140px}
-  .item h3{font-size:1.2rem}
-}
-</style>
+<!-- CSS principal -->
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -67,111 +19,138 @@ h2::after{
 
 <main>
 
-<!-- ENTRANTES -->
+<!-- ============ ENTRANTES ============ -->
 <h2>Entrantes</h2>
+
 <article class="item">
   <div class="info">
-    <h3>Jamón bellota 100 × 100</h3>
-    <span class="en">100 % Iberian ham</span>
-  </div><span class="price">14 €</span>
+    <h3>Jamón bellota 100 × 100</h3>
+    <span class="en">100 % Iberian ham</span>
+  </div>
+  <span class="price">14 €</span>
 </article>
+
 <article class="item">
   <div class="info">
     <h3>Queso viejo</h3>
     <span class="en">Aged cheese</span>
-  </div><span class="price">14 €</span>
+  </div>
+  <span class="price">14 €</span>
 </article>
 
-<!-- ENSALADAS -->
-<img class="cat-photo" src="img/rulo.jpg">
-
+<!-- ============ ENSALADAS ============ -->
+<img class="cat-photo" src="img/rulo.jpg" alt="Ensaladas variadas">
 <h2>Ensaladas</h2>
+
 <article class="item">
   <div class="info">
     <h3>Ensalada de la casa</h3>
     <span class="en">House salad</span>
-  </div><span class="price">10 €</span>
+  </div>
+  <span class="price">10 €</span>
 </article>
+
 <article class="item">
   <div class="info">
     <h3>Ensalada de rulo de cabra</h3>
     <span class="en">Goat‑cheese salad</span>
-  </div><span class="price">13 €</span>
+  </div>
+  <span class="price">13 €</span>
 </article>
 
-<!-- GUISOS Y ARROCES -->
+<!-- ============ GUISOS Y ARROCES ============ -->
 <h2>Guisos y arroces</h2>
+
 <article class="item">
   <div class="info">
     <h3>Garbanzos con langostinos</h3>
     <span class="en">Chickpeas with prawns</span>
-  </div><span class="price">14 €</span>
+  </div>
+  <span class="price">14 €</span>
 </article>
+
 <article class="item">
   <div class="info">
     <h3>Arroz negro</h3>
     <span class="en">Black rice</span>
-  </div><span class="price">15 €</span>
+  </div>
+  <span class="price">15 €</span>
 </article>
 
-<!-- FRITURAS -->
+<!-- ============ FRITURAS ============ -->
 <h2>Frituras</h2>
+
 <article class="item">
   <div class="info">
     <h3>Croquetas de gambas al ajillo (½ doc.)</h3>
     <span class="en">Garlic shrimp croquettes</span>
-  </div><span class="price">7 €</span>
+  </div>
+  <span class="price">7 €</span>
 </article>
+
 <article class="item">
   <div class="info">
     <h3>Puntillitas</h3>
     <span class="en">Fried baby squid</span>
-  </div><span class="price">11 €</span>
+  </div>
+  <span class="price">11 €</span>
 </article>
 
-<!-- REVUELTOS -->
+<!-- ============ REVUELTOS ============ -->
 <h2>Revueltos</h2>
+
 <article class="item">
   <div class="info">
     <h3>Revuelto de habas con jamón</h3>
     <span class="en">Broad beans & ham scramble</span>
-  </div><span class="price">11,5 €</span>
+  </div>
+  <span class="price">11,5 €</span>
 </article>
+
 <article class="item">
   <div class="info">
     <h3>Revuelto de trigueros</h3>
     <span class="en">Asparagus scramble</span>
-  </div><span class="price">10,5 €</span>
+  </div>
+  <span class="price">10,5 €</span>
 </article>
 
-<!-- CARNES -->
+<!-- ============ CARNES ============ -->
 <h2>Carnes</h2>
+
 <article class="item">
   <div class="info">
     <h3>Presa ibérica</h3>
     <span class="en">Iberian pork shoulder</span>
-  </div><span class="price">16 €</span>
+  </div>
+  <span class="price">16 €</span>
 </article>
+
 <article class="item">
   <div class="info">
     <h3>Entrecot de ternera (300 g)</h3>
     <span class="en">Beef entrecôte</span>
-  </div><span class="price">18 €</span>
+  </div>
+  <span class="price">18 €</span>
 </article>
 
-<!-- PESCADOS -->
+<!-- ============ PESCADOS ============ -->
 <h2>Pescados</h2>
+
 <article class="item">
   <div class="info">
     <h3>Lubina al horno</h3>
     <span class="en">Baked sea bass</span>
-  </div><span class="price">16 €</span>
+  </div>
+  <span class="price">16 €</span>
 </article>
+
 <article class="item">
   <div class="info">
     <h3>Choco frito (½ ración)</h3>
     <span class="en">Fried cuttlefish</span>
-  </div><span class="price">10 €</span>
+  </div>
+  <span class="price">10 €</span>
 </article>
 
 </main>

@@ -1,7 +1,6 @@
-/* Google Fonts ---------------------------------------------------- */
+/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500&display=swap');
 
-/* Paleta ---------------------------------------------------------- */
 :root{
   --bg:#fff;
   --txt:#000;
@@ -10,46 +9,48 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{
-  height:100%;background:var(--bg);color:var(--txt);
-  font-family:'Inter',sans-serif;line-height:1.45;overflow-x:hidden;
-}
+html,body{height:100%;background:var(--bg);color:var(--txt);
+  font-family:'Inter',sans-serif;line-height:1.45;overflow-x:hidden}
 
-/* ---------- ENCABEZADO ---------- */
+/* Encabezado */
 header{text-align:center;padding:24px 16px 12px}
 header img{width:80%;max-width:350px;height:auto}
 
-/* ---------- CONTENIDO ---------- */
+/* Contenido */
 main{max-width:900px;margin:auto;padding:0 16px 80px}
 
-/* ---------- SECCIONES ---------- */
+/* Títulos de sección */
 h2{
-  font-family:'Libre Baskerville',serif;font-size:2rem;font-weight:700;
-  text-align:center;margin:40px 0 24px;position:relative}
-h2::after{
-  content:'';display:block;width:80px;height:2px;background:var(--accent);
+  font-family:'Libre Baskerville',serif;font-size:2rem;font-weight:700;text-align:center;
+  margin:40px 0 24px;position:relative}
+h2::after{content:'';display:block;width:80px;height:2px;background:var(--accent);
   margin:12px auto 0;border-radius:6px}
 
-/* ---------- FOTO DE CATEGORÍA ---------- */
+/* Foto de categoría: móvil sin márgenes, escritorio centrada */
 .cat-photo{
-  display:block;
-  width:100vw;                       /* siempre igual al ancho visible */
-  max-width:none;                    /* sin límites del contenedor */
-  height:140px;                      /* alto razonable en móvil */
-  object-fit:cover;                  /* recorte elegante arriba/abajo */
-  margin:24px 0 12px 50%;            /* desplazamos para centrar */
-  transform:translateX(-50%);        /* centra eliminando márgenes laterales */
-  border-radius:0;                   /* bordes rectos en móvil */
+  display:block;width:100vw;max-width:none;height:140px;object-fit:cover;
+  margin:24px 0 12px;border-radius:0;          /* 0 bordes, 0 márgenes laterales */
+  position:relative;left:50%;transform:translateX(-50%);
 }
-
-/* Escritorio: centrada dentro de main con bordes redondeados */
 @media(min-width:680px){
   .cat-photo{
-    width:100%;                      /* vuelve a tomar el ancho de main */
-    max-width:900px;
-    height:260px;
-    margin:40px auto 16px;
-    transform:none;                  /* ya no necesita el shift */
-    border-radius:12px;
+    width:100%;max-width:900px;height:260px;border-radius:12px;
+    margin:40px auto 16px;left:0;transform:none;
   }
+}
+
+/* Plato */
+.item{display:flex;align-items:flex-start;gap:1rem;margin:12px 0}
+.item img{width:110px;height:110px;object-fit:cover;border-radius:8px}
+.item .info{flex:1;position:relative;padding-right:12px}
+.item h3{font-family:'Libre Baskerville',serif;font-size:1.1rem;font-weight:700}
+.item .en{color:var(--sub);font-size:.86rem}
+.item .info::after{content:'';position:absolute;left:0;right:0;bottom:4px;
+  border-bottom:1px dotted rgba(0,0,0,.35);z-index:-1}
+.item .price{white-space:nowrap;font-weight:500;font-size:1rem;margin-left:12px}
+
+@media(min-width:680px){
+  .item{gap:1.4rem}
+  .item img{width:140px;height:140px}
+  .item h3{font-size:1.2rem}
 }
